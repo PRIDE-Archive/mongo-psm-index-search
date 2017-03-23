@@ -37,12 +37,12 @@ public class ProjectPsmIndexer {
     }
     Instant endTime = Instant.now();
     logger.info("Found " + psms.size() + " PSMs for project: " + projectAccession + " and assay: " + assayAccession
-      + " in " + ChronoUnit.SECONDS.between(startTime,endTime) +  "seconds");
+      + " in " + ChronoUnit.SECONDS.between(startTime,endTime) +  " seconds");
     startTime = Instant.now();
     psmIndexService.save(psms); // add all PSMs to index
     logger.debug("COMMITTED " + psms.size() + " PSMs from project:" + projectAccession + " assay: " + assayAccession);
     endTime = Instant.now();
-    logger.info("DONE indexing all PSMs for project " + projectAccession
+    logger.info("DONE indexing all PSMs for project :" + projectAccession + " assay: " + assayAccession
       + " in " + ChronoUnit.SECONDS.between(startTime,endTime) + " seconds");
   }
 
