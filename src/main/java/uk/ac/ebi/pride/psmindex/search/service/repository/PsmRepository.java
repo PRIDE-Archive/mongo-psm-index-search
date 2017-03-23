@@ -23,10 +23,15 @@ public interface PsmRepository extends MongoRepository<Psm, String> {
   List<Psm> findByPeptideSequence(String peptideSequence);
   Page<Psm> findByPeptideSequence(String peptideSequence, Pageable pageable);
   List<Psm> findPeptideSequencesByProjectAccession(String projectAccession);
+  List<Psm> findByPeptideSequenceAndProjectAccession(String peptideSequence, String projectAccession);
   Page<Psm> findByPeptideSequenceAndProjectAccession(String peptideSequence, String projectAccession, Pageable pageable);
+  List<Psm> findByPeptideSequenceAndAssayAccession(String peptideSequence, String assayAccession);
   Page<Psm> findByPeptideSequenceAndAssayAccession(String peptideSequence, String assayAccession, Pageable pageable);
+  Long countByPeptideSequenceAndAssayAccession (String peptideSequence, String assayAccession);
+  Long countByPeptideSequenceAndProjectAccession(String peptideSequence, String projectAccession);
+  List<Psm> findByPeptideSequenceLikeAndProjectAccession(String peptideSequence, String projectAccession);
 
-  // Project accession query methods
+    // Project accession query methods
   List<Psm> findByProjectAccession(String projectAccession);
   Page<Psm> findByProjectAccession(String projectAccession, Pageable pageable);
   List<Psm> findByProjectAccessionIn(Collection<String> projectAccessions);

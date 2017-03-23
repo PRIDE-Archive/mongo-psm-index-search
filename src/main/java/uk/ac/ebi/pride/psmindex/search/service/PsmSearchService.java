@@ -53,12 +53,32 @@ public class PsmSearchService {
     return psmRepository.findPeptideSequencesByProjectAccession(projectAccession);
   }
 
+  public List<Psm> findByPeptideSequenceAndProjectAccession(String peptideSequence, String projectAccession) {
+    return psmRepository.findByPeptideSequenceAndProjectAccession(peptideSequence, projectAccession);
+  }
+
   public Page<Psm> findByPeptideSequenceAndProjectAccession(String peptideSequence, String projectAccession, Pageable pageable) {
     return psmRepository.findByPeptideSequenceAndProjectAccession(peptideSequence, projectAccession, pageable);
   }
 
+  public List<Psm> findByPeptideSequenceAndAssayAccession(String peptideSequence, String assayAccession) {
+    return  psmRepository.findByPeptideSequenceAndAssayAccession(peptideSequence, assayAccession);
+  }
+
   public Page<Psm> findByPeptideSequenceAndAssayAccession(String peptideSequence, String assayAccession, Pageable pageable) {
     return  psmRepository.findByPeptideSequenceAndAssayAccession(peptideSequence, assayAccession, pageable);
+  }
+
+  public Long countByPeptideSequenceAndAssayAccession(String peptideSequence, String assayAccession) {
+    return psmRepository.countByPeptideSequenceAndAssayAccession(peptideSequence, assayAccession);
+  }
+
+  public Long countByPeptideSequenceAndProjectAccession(String peptideSequence, String projectAccession) {
+    return psmRepository.countByPeptideSequenceAndProjectAccession(peptideSequence, projectAccession);
+  }
+
+  public List<Psm> findByPeptideSequenceLikeAndProjectAccession (String peptideSequence, String projectAccession) {
+    return psmRepository.findByPeptideSequenceLikeAndProjectAccession("*" + peptideSequence + "*", projectAccession);
   }
 
   public List<Psm> findByProjectAccession(String projectAccession) {
