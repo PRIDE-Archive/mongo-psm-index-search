@@ -134,7 +134,10 @@ public class PsmServiceTest {
   @Test
   public void testCountProjectAccession() throws Exception {
     assertEquals((Long) 1L,  psmSearchService.countByProjectAccession(PROJECT_1_ACCESSION));
+    assertEquals((Long) 1L,  psmSearchService.countByPeptideSequenceAndProjectAccession(PSM_1_SEQUENCE, PROJECT_1_ACCESSION));
     assertEquals((Long) 2L,  psmSearchService.countByProjectAccession(PROJECT_2_ACCESSION));
+    List<Psm> psms = psmSearchService.findByPeptideSequenceLikeAndProjectAccession(PSM_1_SEQUENCE, PROJECT_1_ACCESSION);
+    assertEquals(1, psms.size());
   }
 
   @Test
@@ -142,7 +145,6 @@ public class PsmServiceTest {
     assertEquals((Long) 1L,  psmSearchService.countByAssayAccession(ASSAY_1_ACCESSION));
     assertEquals((Long) 2L,  psmSearchService.countByAssayAccession(ASSAY_2_ACCESSION));
   }
-
 
   private void addPsm_1() {
     Psm psm = new Psm();
