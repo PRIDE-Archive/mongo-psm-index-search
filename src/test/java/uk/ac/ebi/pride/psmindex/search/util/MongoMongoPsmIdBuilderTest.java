@@ -3,9 +3,9 @@ package uk.ac.ebi.pride.psmindex.search.util;
 import org.junit.Test;
 
 import static junit.framework.Assert.assertEquals;
-import static uk.ac.ebi.pride.psmindex.search.util.PsmIdBuilder.*;
+import static uk.ac.ebi.pride.psmindex.search.util.MongoPsmIdBuilder.*;
 
-public class PsmIdBuilderTest {
+public class MongoMongoPsmIdBuilderTest {
 
   private static final String PROJECT_ACCESSION = "PXT000111";
   private static final String ASSAY_ACCESSION = "12345";

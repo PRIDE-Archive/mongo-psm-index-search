@@ -13,9 +13,9 @@ import uk.ac.ebi.pride.indexutils.modifications.Modification;
 import uk.ac.ebi.pride.indexutils.params.CvParam;
 import uk.ac.ebi.pride.jmztab.model.MZTabFile;
 import uk.ac.ebi.pride.jmztab.utils.MZTabFileParser;
-import uk.ac.ebi.pride.psmindex.search.model.Psm;
-import uk.ac.ebi.pride.psmindex.search.service.PsmIndexService;
-import uk.ac.ebi.pride.psmindex.search.service.PsmSearchService;
+import uk.ac.ebi.pride.psmindex.search.model.MongoPsm;
+import uk.ac.ebi.pride.psmindex.search.service.MongoPsmIndexService;
+import uk.ac.ebi.pride.psmindex.search.service.MongoPsmSearchService;
 import uk.ac.ebi.pride.psmindex.search.util.ErrorLogOutputStream;
 
 import javax.annotation.Resource;
@@ -28,8 +28,8 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:spring-mongo-test-context.xml"})
-public class ProjectPsmIndexerTest {
-  private static Logger logger = LoggerFactory.getLogger(ProjectPsmIndexerTest.class);
+public class MongoProjectMongoPsmIndexerTest {
+  private static Logger logger = LoggerFactory.getLogger(MongoProjectMongoPsmIndexerTest.class);
   private static ErrorLogOutputStream errorLogOutputStream = new ErrorLogOutputStream(logger);
 
   private static final String PROJECT_1_ACCESSION = "PXD000581";
@@ -64,23 +64,23 @@ public class ProjectPsmIndexerTest {
   private static final String NEUTRAL_LOSS_VAL = "63.998283";
   private static final Integer NEUTRAL_LOSS_POS = 7;
 
-  private ProjectPsmIndexer projectPsmIndexer;
+  private MongoProjectPsmIndexer mongoProjectPsmIndexer;
 
   @Resource
-  private PsmIndexService psmIndexService;
+  private MongoPsmIndexService mongoPsmIndexService;
 
   @Resource
-  private PsmSearchService psmSearchService;
+  private MongoPsmSearchService mongoPsmSearchService;
 
   @Before
   public void setup() throws Exception {
-    projectPsmIndexer = new ProjectPsmIndexer(psmIndexService);
+    mongoProjectPsmIndexer = new MongoProjectPsmIndexer(mongoPsmIndexService);
     deleteAllData();
     insertTestData();
   }
 
   private void deleteAllData() {
-    psmIndexService.deleteAll();
+    mongoPsmIndexService.deleteAll();
   }
 
   private void insertTestData() throws IOException {
@@ -93,42 +93,30 @@ public class ProjectPsmIndexerTest {
     mzTabFileP2A1 = new MZTabFileParser(
         new File("src/test/resources/submissions/TST000121/generated/PRIDE_Exp_Complete_Ac_00001.mztab"),
         errorLogOutputStream).getMZTabFile();
-    projectPsmIndexer.indexAllPsmsForProjectAndAssay(PROJECT_1_ACCESSION, PROJECT_1_ASSAY_1, mzTabFileP1A1);
-    projectPsmIndexer.indexAllPsmsForProjectAndAssay(PROJECT_1_ACCESSION, PROJECT_1_ASSAY_2, mzTabFileP1A2);
-    projectPsmIndexer.indexAllPsmsForProjectAndAssay(PROJECT_2_ACCESSION, PROJECT_2_ASSAY_1, mzTabFileP2A1);
+    mongoProjectPsmIndexer.indexAllPsmsForProjectAndAssay(PROJECT_1_ACCESSION, PROJECT_1_ASSAY_1, mzTabFileP1A1);
+    mongoProjectPsmIndexer.indexAllPsmsForProjectAndAssay(PROJECT_1_ACCESSION, PROJECT_1_ASSAY_2, mzTabFileP1A2);
+    mongoProjectPsmIndexer.indexAllPsmsForProjectAndAssay(PROJECT_2_ACCESSION, PROJECT_2_ASSAY_1, mzTabFileP2A1);
   }
 
   @After
   public void tearDown() throws Exception {
-    projectPsmIndexer.deleteAllPsmsForProject(PROJECT_1_ACCESSION);
-    projectPsmIndexer.deleteAllPsmsForProject(PROJECT_2_ACCESSION);
-    List<Psm> psms = psmSearchService.findByAssayAccession(PROJECT_1_ASSAY_1);
-    assertEquals(0, psms.size());
-    psms = psmSearchService.findByAssayAccession(PROJECT_1_ASSAY_2);
-    assertEquals(0, psms.size());
-    psms = psmSearchService.findByProjectAccession(PROJECT_1_ACCESSION);
-    assertEquals(0, psms.size());
-    psms = psmSearchService.findByReportedId(PSM3_ID);
+    mongoProjectPsmIndexer.deleteAllPsmsForProject(PROJECT_1_ACCESSION);
+    mongoProjectPsmIndexer.deleteAllPsmsForProject(PROJECT_2_ACCESSION);
+    List<MongoPsm> psms = mongoPsmSearchService.findByProjectAccession(PROJECT_1_ACCESSION);
     assertEquals(0, psms.size());
   }
 
   @Test
   public void testIndexAllPsmsForProjectAndAssay() throws Exception {
-    List<Psm> psms = psmSearchService.findByAssayAccession(PROJECT_1_ASSAY_1);
-    assertEquals(NUM_PSMS_P1A1, psms.size());
-    psms = psmSearchService.findByAssayAccession(PROJECT_1_ASSAY_2);
-    assertEquals(NUM_PSMS_P1A2, psms.size());
-    psms = psmSearchService.findByAssayAccession(PROJECT_2_ASSAY_1);
-    assertEquals(NUM_PSMS_P2A1, psms.size());
-    psms = psmSearchService.findByProjectAccession(PROJECT_1_ACCESSION);
+    List<MongoPsm> psms = mongoPsmSearchService.findByProjectAccession(PROJECT_1_ACCESSION);
     assertEquals(NUM_PSMS_PROJECT_1, psms.size());
-    psms = psmSearchService.findByProjectAccession(PROJECT_2_ACCESSION);
+    psms = mongoPsmSearchService.findByProjectAccession(PROJECT_2_ACCESSION);
     assertEquals(NUM_PSMS_PROJECT_2, psms.size());
   }
 
   @Test
   public void addPsmWithNeutralLoss() {
-    Psm psm = new Psm();
+    MongoPsm psm = new MongoPsm();
     psm.setId(PSM_3_ID);
     psm.setReportedId(PSM_3_REPORTED_ID);
     psm.setPeptideSequence(PSM_3_SEQUENCE);
@@ -152,6 +140,6 @@ public class ProjectPsmIndexerTest {
     modifications.add(mod2);
     modifications.add(mod3);
     psm.setModifications(modifications);
-    psmIndexService.save(psm);
+    mongoPsmIndexService.save(psm);
   }
 }

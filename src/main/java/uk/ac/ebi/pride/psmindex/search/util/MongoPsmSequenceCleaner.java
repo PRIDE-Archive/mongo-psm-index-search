@@ -7,8 +7,8 @@ import org.slf4j.LoggerFactory;
 /**
  * This class cleans a PSM Sequence by converting it to uppercase, and removing any unknown characters.
  */
-public class PsmSequenceCleaner {
-  private static Logger logger = LoggerFactory.getLogger(PsmSequenceCleaner.class.getName());
+public class MongoPsmSequenceCleaner {
+  private static Logger logger = LoggerFactory.getLogger(MongoPsmSequenceCleaner.class.getName());
 
   public static final String NO_PEPTIDE_REGEX = "[^ABCDEFGHIJKLMNPQRSTUVWXYZ]";
 
@@ -20,7 +20,7 @@ public class PsmSequenceCleaner {
    */
   public static String cleanPeptideSequence(String peptideSequence) {
     String result = null;
-    logger.debug("Cleaing the input peptide sequence: " + peptideSequence);
+    logger.debug("Cleaning the input peptide sequence: " + peptideSequence);
     if(!StringUtils.isEmpty(peptideSequence)) {
       result = peptideSequence.toUpperCase().replaceAll(NO_PEPTIDE_REGEX, "");
     }

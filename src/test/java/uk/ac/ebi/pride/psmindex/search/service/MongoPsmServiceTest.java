@@ -9,7 +9,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.ac.ebi.pride.archive.dataprovider.identification.ModificationProvider;
 import uk.ac.ebi.pride.indexutils.modifications.Modification;
-import uk.ac.ebi.pride.psmindex.search.model.Psm;
+import uk.ac.ebi.pride.psmindex.search.model.MongoPsm;
 
 import javax.annotation.Resource;
 
@@ -21,7 +21,7 @@ import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:spring-mongo-test-context.xml")
-public class PsmServiceTest {
+public class MongoPsmServiceTest {
 
   // PSM 1 test data
   private static final String PSM_1_ID = "TEST-PSM-ID1";
@@ -92,10 +92,10 @@ public class PsmServiceTest {
   public static final long SINGLE_DOC = 1L;
 
   @Resource
-  private PsmIndexService psmIndexService;
+  private MongoPsmIndexService mongoPsmIndexService;
 
   @Resource
-  private PsmSearchService psmSearchService;
+  private MongoPsmSearchService mongoPsmSearchService;
 
   @Before
   public void setUp() throws Exception {
@@ -109,7 +109,7 @@ public class PsmServiceTest {
   }
 
   private void deleteAllData() {
-    psmIndexService.deleteAll();
+    mongoPsmIndexService.deleteAll();
   }
 
   private void insertTestData() {
@@ -120,34 +120,19 @@ public class PsmServiceTest {
 
   @Test
   public void testSearchById() {
-    Psm psm1= psmSearchService.findById(PSM_1_ID);
+    MongoPsm psm1= mongoPsmSearchService.findById(PSM_1_ID);
     assertNotNull(psm1);
     assertEquals(PSM_1_ID, psm1.getId());
-    Psm psm2 = psmSearchService.findById(PSM_2_ID);
+    MongoPsm psm2 = mongoPsmSearchService.findById(PSM_2_ID);
     assertNotNull(psm2);
     assertEquals(PSM_2_ID, psm2.getId());
-    Psm psm3 = psmSearchService.findById(PSM_3_ID);
+    MongoPsm psm3 = mongoPsmSearchService.findById(PSM_3_ID);
     assertNotNull(psm3);
     assertEquals(PSM_3_ID, psm3.getId());
   }
 
-  @Test
-  public void testCountProjectAccession() throws Exception {
-    assertEquals((Long) 1L,  psmSearchService.countByProjectAccession(PROJECT_1_ACCESSION));
-    assertEquals((Long) 1L,  psmSearchService.countByPeptideSequenceAndProjectAccession(PSM_1_SEQUENCE, PROJECT_1_ACCESSION));
-    assertEquals((Long) 2L,  psmSearchService.countByProjectAccession(PROJECT_2_ACCESSION));
-    List<Psm> psms = psmSearchService.findByPeptideSequenceLikeAndProjectAccession(PSM_1_SEQUENCE, PROJECT_1_ACCESSION);
-    assertEquals(1, psms.size());
-  }
-
-  @Test
-  public void testCountAssayAccession() throws Exception {
-    assertEquals((Long) 1L,  psmSearchService.countByAssayAccession(ASSAY_1_ACCESSION));
-    assertEquals((Long) 2L,  psmSearchService.countByAssayAccession(ASSAY_2_ACCESSION));
-  }
-
   private void addPsm_1() {
-    Psm psm = new Psm();
+    MongoPsm psm = new MongoPsm();
     psm.setId(PSM_1_ID);
     psm.setReportedId(PSM_1_REPORTED_ID);
     psm.setPeptideSequence(PSM_1_SEQUENCE);
@@ -167,11 +152,11 @@ public class PsmServiceTest {
     modifications.add(mod2);
     mod2.setName(MOD_2_NAME);
     psm.setModifications(modifications);
-    psmIndexService.save(psm);
+    mongoPsmIndexService.save(psm);
   }
 
   private void addPsm_2() {
-    Psm psm = new Psm();
+    MongoPsm psm = new MongoPsm();
     psm.setId(PSM_2_ID);
     psm.setReportedId(PSM_2_REPORTED_ID);
     psm.setPeptideSequence(PSM_2_SEQUENCE);
@@ -191,11 +176,11 @@ public class PsmServiceTest {
     modifications.add(mod1);
     modifications.add(mod2);
     psm.setModifications(modifications);
-    psmIndexService.save(psm);
+    mongoPsmIndexService.save(psm);
   }
 
   private void addPsm_3() {
-    Psm psm = new Psm();
+    MongoPsm psm = new MongoPsm();
     psm.setId(PSM_3_ID);
     psm.setReportedId(PSM_3_REPORTED_ID);
     psm.setPeptideSequence(PSM_3_SEQUENCE);
@@ -215,6 +200,6 @@ public class PsmServiceTest {
     modifications.add(mod1);
     modifications.add(mod2);
     psm.setModifications(modifications);
-    psmIndexService.save(psm);
+    mongoPsmIndexService.save(psm);
   }
 }

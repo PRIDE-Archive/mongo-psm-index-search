@@ -12,52 +12,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Document(collection = "psm")
-public class Psm implements PeptideSequenceProvider {
+public class MongoPsm implements PeptideSequenceProvider {
   @Id
   private String id;
-
   private String reportedId;
-
   private String peptideSequence;
-
   private String spectrumId;   // If the psm was discovered as a combination of several spectra, we will  simplify the case choosing only the first spectrum
-
   private String proteinAccession;
-
   private String database;
-
   private String databaseVersion;
-
   private String projectAccession;
-
   private String assayAccession;
-
   private List<String> modificationsAsString;
-
   private List<String> modificationNames;
-
   private List<String> modificationAccessions;
-
   private Boolean unique;
-
   private List<String> searchEngineAsString;
-
   private List<String> searchEngineScoreAsString;
-
   private Double retentionTime;   // If the psm was discovered as a combination of several spectra, we will simplify the case choosing only the first spectrum and the first retention time
-
   private Integer charge;
-
   private Double expMassToCharge;
-
   private Double calculatedMassToCharge;
-
   private String preAminoAcid;
-
   private String postAminoAcid;
-
   private Integer startPosition;
-
   private Integer endPosition;
 
   public String getId() {

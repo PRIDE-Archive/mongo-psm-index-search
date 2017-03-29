@@ -4,8 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import uk.ac.ebi.pride.psmindex.search.model.Psm;
-import uk.ac.ebi.pride.psmindex.search.service.repository.PsmRepository;
+import uk.ac.ebi.pride.psmindex.search.model.MongoPsm;
+import uk.ac.ebi.pride.psmindex.search.service.repository.MongoPsmRepository;
 
 import javax.annotation.Resource;
 import java.util.Collection;
@@ -14,40 +14,40 @@ import java.util.Collection;
  * Created by tobias on 08/03/2017.
  */
 @Service
-public class PsmIndexService {
+public class MongoPsmIndexService {
 
-  private static Logger logger = LoggerFactory.getLogger(PsmIndexService.class.getName());
+  private static Logger logger = LoggerFactory.getLogger(MongoPsmIndexService.class.getName());
 
   @Resource
-  private PsmRepository psmRepository;
+  private MongoPsmRepository mongoPsmRepository;
 
-  public PsmIndexService() {
+  public MongoPsmIndexService() {
   }
 
-  public void setPsmRepository(PsmRepository psmRepository) {
-    this.psmRepository = psmRepository;
-  }
-
-  @Transactional
-  public void save(Psm psm) {
-    psmRepository.save(psm);
+  public void setMongoPsmRepository(MongoPsmRepository mongoPsmRepository) {
+    this.mongoPsmRepository = mongoPsmRepository;
   }
 
   @Transactional
-  public void save(Iterable<Psm> psms) {
+  public void save(MongoPsm psm) {
+    mongoPsmRepository.save(psm);
+  }
+
+  @Transactional
+  public void save(Iterable<MongoPsm> psms) {
     if (psms==null || !psms.iterator().hasNext())
       logger.debug("No PSMs to save");
     else {
       if (logger.isDebugEnabled()) {
         debugSavePsm(psms);
       }
-      psmRepository.save(psms);
+      mongoPsmRepository.save(psms);
     }
   }
 
-  private void debugSavePsm(Iterable<Psm> psms) {
+  private void debugSavePsm(Iterable<MongoPsm> psms) {
     int i = 0;
-    for (Psm psm : psms) {
+    for (MongoPsm psm : psms) {
       logger.debug("Saving PSM " + i + " with ID: " + psm.getId());
       logger.debug("Project accession: " + psm.getProjectAccession());
       logger.debug("Assay accession: " + psm.getAssayAccession());
@@ -58,33 +58,33 @@ public class PsmIndexService {
   }
 
   @Transactional
-  public void delete(Psm psm){
-    psmRepository.delete(psm);
+  public void delete(MongoPsm psm){
+    mongoPsmRepository.delete(psm);
   }
 
   @Transactional
-  public void delete(Iterable<Psm> psms){
+  public void delete(Iterable<MongoPsm> psms){
     if (psms==null || !psms.iterator().hasNext())
       logger.info("No PSMs to delete");
     else {
-      psmRepository.delete(psms);
+      mongoPsmRepository.delete(psms);
     }
   }
 
   @Transactional
   public void deleteAll() {
-    psmRepository.deleteAll();
+    mongoPsmRepository.deleteAll();
   }
 
   @Transactional
   public void deleteByProjectAccession(String projectAccession) {
     //Possible improvement, retrieve the ids to be deleted instead of the objects
-    psmRepository.delete(psmRepository.findByProjectAccession(projectAccession));
+    mongoPsmRepository.delete(mongoPsmRepository.findByProjectAccession(projectAccession));
   }
 
   @Transactional
-  public Iterable<Psm> save(Collection<Psm> psms) {
-    return psmRepository.save(psms);
+  public Iterable<MongoPsm> save(Collection<MongoPsm> psms) {
+    return mongoPsmRepository.save(psms);
   }
 
 }

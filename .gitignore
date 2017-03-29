@@ -30,3 +30,4 @@ Thumbs.db
 log/
 target/
 .idea/
+!/src/main/java/uk/ac/ebi/pride/psmindex/search/util/ErrorLogOutputStream.java

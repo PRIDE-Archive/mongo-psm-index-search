@@ -3,7 +3,7 @@ package uk.ac.ebi.pride.psmindex.search.util;
 /**
  * This class builds a PSM ID String.
  */
-public class PsmIdBuilder {
+public class MongoPsmIdBuilder {
 
   public static final String SEPARATOR = "_";
 
