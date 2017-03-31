@@ -1,11 +1,11 @@
-package uk.ac.ebi.pride.psmindex.search.indexer;
+package uk.ac.ebi.pride.psmindex.mongo.search.indexer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.jmztab.model.MZTabFile;
-import uk.ac.ebi.pride.psmindex.search.model.MongoPsm;
-import uk.ac.ebi.pride.psmindex.search.service.MongoPsmIndexService;
-import uk.ac.ebi.pride.psmindex.search.util.MongoPsmMzTabBuilder;
+import uk.ac.ebi.pride.psmindex.mongo.search.model.MongoPsm;
+import uk.ac.ebi.pride.psmindex.mongo.search.service.MongoPsmIndexService;
+import uk.ac.ebi.pride.psmindex.mongo.search.util.MongoPsmMzTabBuilder;
 
 import javax.annotation.Resource;
 import java.time.Instant;

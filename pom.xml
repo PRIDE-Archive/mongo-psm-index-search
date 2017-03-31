@@ -2,9 +2,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>uk.ac.ebi.pride.maven</groupId>
-        <artifactId>pride-base-master</artifactId>
-        <version>1.0.5</version>
+        <groupId>uk.ac.ebi.pride.architectural</groupId>
+        <artifactId>pride-core</artifactId>
+        <version>1.0.1</version>
     </parent>
 
     <groupId>uk.ac.ebi.pride</groupId>
@@ -220,7 +220,7 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
-            <version>${spring.version}</version>
+            <version>3.2.9.RELEASE</version>
             <scope>test</scope>
         </dependency>
 
@@ -243,37 +243,10 @@
         </dependency>
     </dependencies>
 
-    <repositories>
-        <repository>
-            <id>nexus-ebi-release-repo</id>
-            <url>http://www.ebi.ac.uk/Tools/maven/repos/content/groups/ebi-repo/</url>
-        </repository>
-        <repository>
-            <id>nexus-ebi-snapshot-repo</id>
-            <url>http://www.ebi.ac.uk/Tools/maven/repos/content/groups/ebi-snapshots/</url>
-        </repository>
-    </repositories>
-
-    <distributionManagement>
-        <!-- EBI repo -->
-        <repository>
-            <id>pst-release</id>
-            <name>EBI Nexus Repository</name>
-            <url>http://www.ebi.ac.uk/Tools/maven/repos/content/repositories/pst-release</url>
-        </repository>
-        <!-- EBI SNAPSHOT repo -->
-        <snapshotRepository>
-            <uniqueVersion>false</uniqueVersion>
-            <id>pst-snapshots</id>
-            <name>EBI Nexus Snapshots Repository</name>
-            <url>http://www.ebi.ac.uk/Tools/maven/repos/content/repositories/pst-snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
-
     <scm>
-        <connection>scm:git:https://github.com/PRIDE-Archive/psm-index-search.git</connection>
-        <developerConnection>scm:git:https://github.com/PRIDE-Archive/psm-index-search.git</developerConnection>
-        <url>scm:git:https://github.com/PRIDE-Archive/psm-index-search.git</url>
+        <connection>scm:git:https://github.com/PRIDE-Archive/mongo-psm-index-search.git</connection>
+        <developerConnection>scm:git:https://github.com/PRIDE-Archive/mongo-psm-index-search.git</developerConnection>
+        <url>scm:git:https://github.com/PRIDE-Archive/mongo-psm-index-search.git</url>
         <tag>HEAD</tag>
     </scm>
 

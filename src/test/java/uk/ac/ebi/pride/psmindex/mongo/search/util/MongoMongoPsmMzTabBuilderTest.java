@@ -1,4 +1,4 @@
-package uk.ac.ebi.pride.psmindex.search.util;
+package uk.ac.ebi.pride.psmindex.mongo.search.util;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -8,13 +8,12 @@ import uk.ac.ebi.pride.archive.dataprovider.identification.ModificationProvider;
 import uk.ac.ebi.pride.archive.dataprovider.param.CvParamProvider;
 import uk.ac.ebi.pride.jmztab.model.MZTabFile;
 import uk.ac.ebi.pride.jmztab.utils.MZTabFileParser;
-import uk.ac.ebi.pride.psmindex.search.model.MongoPsm;
+import uk.ac.ebi.pride.psmindex.mongo.search.model.MongoPsm;
 
 import java.io.File;
 import java.util.*;
 
 import static junit.framework.Assert.*;
-import static uk.ac.ebi.pride.psmindex.search.util.MongoPsmMzTabBuilder.readPsmsFromMzTabFile;
 
 public class MongoMongoPsmMzTabBuilderTest {
 
@@ -52,8 +51,8 @@ public class MongoMongoPsmMzTabBuilderTest {
   @Test
   public void testReadPsmsFromMzTabFilesDirectory() throws Exception {
     Map<String, List<MongoPsm>> psms = new HashMap<>();
-    psms.put(PROJECT_1_ASSAY_1, readPsmsFromMzTabFile(PROJECT_1_ACCESSION, PROJECT_1_ASSAY_1, mzTabFileP1A1));
-    psms.put(PROJECT_1_ASSAY_2, readPsmsFromMzTabFile(PROJECT_1_ACCESSION, PROJECT_1_ASSAY_2, mzTabFileP1A2));
+    psms.put(PROJECT_1_ASSAY_1, MongoPsmMzTabBuilder.readPsmsFromMzTabFile(PROJECT_1_ACCESSION, PROJECT_1_ASSAY_1, mzTabFileP1A1));
+    psms.put(PROJECT_1_ASSAY_2, MongoPsmMzTabBuilder.readPsmsFromMzTabFile(PROJECT_1_ACCESSION, PROJECT_1_ASSAY_2, mzTabFileP1A2));
     assertTrue(psms.size() == NUM_ASSAYS);
     for (Map.Entry<String, List<MongoPsm>> stringLinkedListEntry : psms.entrySet()) {
       for (MongoPsm psm : stringLinkedListEntry.getValue()) {
@@ -65,7 +64,7 @@ public class MongoMongoPsmMzTabBuilderTest {
   @Test
   public void testReadPsmFromMzTabFileAndCompare() throws Exception {
     Map<String, List<MongoPsm>> psms = new HashMap<>();
-    psms.put(PROJECT_2_ASSAY_1, readPsmsFromMzTabFile(PROJECT_2_ACCESSION, PROJECT_2_ASSAY_1, mzTabFileP2A1));
+    psms.put(PROJECT_2_ASSAY_1, MongoPsmMzTabBuilder.readPsmsFromMzTabFile(PROJECT_2_ACCESSION, PROJECT_2_ASSAY_1, mzTabFileP2A1));
     assertTrue(psms.size() == 1);
     MongoPsm firstPsm = psms.entrySet().iterator().next().getValue().get(0);
     assertEquals("TST000121_00001_175_orf19/5636_QSTSSTPCPYWDTGCLCVMPQFAGAVGNCVAK", firstPsm.getId());

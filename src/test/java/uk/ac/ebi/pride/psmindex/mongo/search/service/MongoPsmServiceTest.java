@@ -1,4 +1,4 @@
-package uk.ac.ebi.pride.psmindex.search.service;
+package uk.ac.ebi.pride.psmindex.mongo.search.service;
 
 
 import org.junit.After;
@@ -9,7 +9,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.ac.ebi.pride.archive.dataprovider.identification.ModificationProvider;
 import uk.ac.ebi.pride.indexutils.modifications.Modification;
-import uk.ac.ebi.pride.psmindex.search.model.MongoPsm;
+import uk.ac.ebi.pride.psmindex.mongo.search.model.MongoPsm;
 
 import javax.annotation.Resource;
 

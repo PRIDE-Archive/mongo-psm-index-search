@@ -1,8 +1,9 @@
-package uk.ac.ebi.pride.psmindex.search.service.repository;
+package uk.ac.ebi.pride.psmindex.mongo.search.service.repository;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
-import uk.ac.ebi.pride.psmindex.search.model.MongoPsm;
+import uk.ac.ebi.pride.psmindex.mongo.search.model.MongoPsm;
 
 import java.util.Collection;
 import java.util.List;
@@ -16,6 +17,7 @@ public interface MongoPsmRepository extends MongoRepository<MongoPsm, String> {
   // Project accession methods
   List<MongoPsm> findById(String id);
   List<MongoPsm> findByIdIn(Collection<String> id);
+  List<MongoPsm> findByIdIn(Collection<String> id, Sort sort);
 
     // Project accession query methods
   List<MongoPsm> findByProjectAccession(String projectAccession);

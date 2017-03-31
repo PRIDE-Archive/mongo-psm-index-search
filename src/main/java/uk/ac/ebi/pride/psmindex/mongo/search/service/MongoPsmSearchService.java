@@ -1,10 +1,11 @@
-package uk.ac.ebi.pride.psmindex.search.service;
+package uk.ac.ebi.pride.psmindex.mongo.search.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.stereotype.Service;
-import uk.ac.ebi.pride.psmindex.search.model.MongoPsm;
-import uk.ac.ebi.pride.psmindex.search.service.repository.MongoPsmRepository;
+import uk.ac.ebi.pride.psmindex.mongo.search.model.MongoPsm;
+import uk.ac.ebi.pride.psmindex.mongo.search.service.repository.MongoPsmRepository;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -35,9 +36,11 @@ public class MongoPsmSearchService {
   }
 
   public List<MongoPsm> findByIdIn(Collection<String> ids) {
-    List<MongoPsm> result = new ArrayList<>();
-    ids.forEach(id -> result.add(mongoPsmRepository.findOne(id)));
-    return result;
+    return mongoPsmRepository.findByIdIn(ids);
+  }
+
+  public List<MongoPsm> findByIdIn(Collection<String> ids, Sort sort) {
+    return mongoPsmRepository.findByIdIn(ids, sort);
   }
 
   public List<MongoPsm> findByProjectAccession(String projectAccession) {

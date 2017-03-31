@@ -1,11 +1,11 @@
-package uk.ac.ebi.pride.psmindex.search.service;
+package uk.ac.ebi.pride.psmindex.mongo.search.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import uk.ac.ebi.pride.psmindex.search.model.MongoPsm;
-import uk.ac.ebi.pride.psmindex.search.service.repository.MongoPsmRepository;
+import uk.ac.ebi.pride.psmindex.mongo.search.model.MongoPsm;
+import uk.ac.ebi.pride.psmindex.mongo.search.service.repository.MongoPsmRepository;
 
 import javax.annotation.Resource;
 import java.util.Collection;

@@ -1,4 +1,4 @@
-package uk.ac.ebi.pride.psmindex.search.util;
+package uk.ac.ebi.pride.psmindex.mongo.search.util;
 
 import junit.framework.Assert;
 import org.junit.Test;

@@ -1,4 +1,4 @@
-package uk.ac.ebi.pride.psmindex.search.util;
+package uk.ac.ebi.pride.psmindex.mongo.search.util;
 
 /**
  * This class builds a PSM ID String.

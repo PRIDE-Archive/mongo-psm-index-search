@@ -1,4 +1,4 @@
-package uk.ac.ebi.pride.psmindex.search.util;
+package uk.ac.ebi.pride.psmindex.mongo.search.util;
 
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
@@ -7,7 +7,7 @@ import uk.ac.ebi.pride.archive.utils.spectrum.SpectrumIDGenerator;
 import uk.ac.ebi.pride.archive.utils.spectrum.SpectrumIdGeneratorPride3;
 import uk.ac.ebi.pride.jmztab.model.*;
 import uk.ac.ebi.pride.jmztab.utils.errors.MZTabException;
-import uk.ac.ebi.pride.psmindex.search.model.MongoPsm;
+import uk.ac.ebi.pride.psmindex.mongo.search.model.MongoPsm;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -16,7 +16,7 @@ import java.util.List;
 
 import static uk.ac.ebi.pride.indexutils.helpers.CvParamHelper.convertToCvParamProvider;
 import static uk.ac.ebi.pride.indexutils.helpers.ModificationHelper.convertToModificationProvider;
-import static uk.ac.ebi.pride.psmindex.search.util.MongoPsmIdBuilder.getId;
+import static uk.ac.ebi.pride.psmindex.mongo.search.util.MongoPsmIdBuilder.getId;
 
 public class MongoPsmMzTabBuilder {
 

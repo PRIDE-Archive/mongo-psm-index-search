@@ -1,4 +1,4 @@
-package uk.ac.ebi.pride.psmindex.search.model;
+package uk.ac.ebi.pride.psmindex.mongo.search.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;

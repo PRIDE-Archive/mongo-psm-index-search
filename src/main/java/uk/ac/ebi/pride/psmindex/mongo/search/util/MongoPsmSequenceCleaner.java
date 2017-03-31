@@ -1,4 +1,4 @@
-package uk.ac.ebi.pride.psmindex.search.util;
+package uk.ac.ebi.pride.psmindex.mongo.search.util;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;

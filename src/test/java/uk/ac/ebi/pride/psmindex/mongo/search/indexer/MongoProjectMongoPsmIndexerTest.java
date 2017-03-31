@@ -1,4 +1,4 @@
-package uk.ac.ebi.pride.psmindex.search.indexer;
+package uk.ac.ebi.pride.psmindex.mongo.search.indexer;
 
 import org.junit.After;
 import org.junit.Before;
@@ -13,10 +13,10 @@ import uk.ac.ebi.pride.indexutils.modifications.Modification;
 import uk.ac.ebi.pride.indexutils.params.CvParam;
 import uk.ac.ebi.pride.jmztab.model.MZTabFile;
 import uk.ac.ebi.pride.jmztab.utils.MZTabFileParser;
-import uk.ac.ebi.pride.psmindex.search.model.MongoPsm;
-import uk.ac.ebi.pride.psmindex.search.service.MongoPsmIndexService;
-import uk.ac.ebi.pride.psmindex.search.service.MongoPsmSearchService;
-import uk.ac.ebi.pride.psmindex.search.util.ErrorLogOutputStream;
+import uk.ac.ebi.pride.psmindex.mongo.search.model.MongoPsm;
+import uk.ac.ebi.pride.psmindex.mongo.search.service.MongoPsmIndexService;
+import uk.ac.ebi.pride.psmindex.mongo.search.service.MongoPsmSearchService;
+import uk.ac.ebi.pride.psmindex.mongo.search.util.ErrorLogOutputStream;
 
 import javax.annotation.Resource;
 import java.io.File;

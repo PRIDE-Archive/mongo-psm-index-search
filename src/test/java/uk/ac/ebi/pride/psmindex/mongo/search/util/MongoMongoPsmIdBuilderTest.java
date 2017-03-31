@@ -1,9 +1,9 @@
-package uk.ac.ebi.pride.psmindex.search.util;
+package uk.ac.ebi.pride.psmindex.mongo.search.util;
 
 import org.junit.Test;
 
 import static junit.framework.Assert.assertEquals;
-import static uk.ac.ebi.pride.psmindex.search.util.MongoPsmIdBuilder.*;
+import static uk.ac.ebi.pride.psmindex.mongo.search.util.MongoPsmIdBuilder.*;
 
 public class MongoMongoPsmIdBuilderTest {
 
