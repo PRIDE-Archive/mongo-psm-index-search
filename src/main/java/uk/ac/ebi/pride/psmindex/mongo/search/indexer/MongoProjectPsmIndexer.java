@@ -34,15 +34,12 @@ public class MongoProjectPsmIndexer {
     } catch (Exception e) {
       logger.error("Cannot get PSMs from project: " + projectAccession + " and assay: " + assayAccession, e);
     }
-    Instant endTime = Instant.now();
-    logger.info("Found " + psms.size() + " PSMs for project: " + projectAccession + " and assay: " + assayAccession
-      + " in " + ChronoUnit.SECONDS.between(startTime,endTime) +  " seconds");
+    logger.info("(MongoDB) Found " + psms.size() + " PSMs for project: " + projectAccession + " and assay: " + assayAccession
+      + " in " + ChronoUnit.SECONDS.between(startTime,Instant.now()) +  " seconds");
     startTime = Instant.now();
     mongoPsmIndexService.save(psms); // add all PSMs to index
-    logger.debug("COMMITTED " + psms.size() + " PSMs from project:" + projectAccession + " assay: " + assayAccession);
-    endTime = Instant.now();
-    logger.info("DONE indexing all PSMs for project :" + projectAccession + " assay: " + assayAccession
-      + " in " + ChronoUnit.SECONDS.between(startTime,endTime) + " seconds");
+    logger.info("(MongoDB) DONE indexing all PSMs for project :" + projectAccession + " assay: " + assayAccession
+      + " in " + ChronoUnit.SECONDS.between(startTime,Instant.now()) + " seconds");
   }
 
   public void deleteAllPsmsForProject(String projectAccession) {
