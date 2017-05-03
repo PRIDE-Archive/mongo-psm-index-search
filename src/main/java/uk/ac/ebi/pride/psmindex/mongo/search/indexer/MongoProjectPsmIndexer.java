@@ -45,5 +45,4 @@ public class MongoProjectPsmIndexer {
   public void deleteAllPsmsForProject(String projectAccession) {
     mongoPsmIndexService.deleteByProjectAccession(projectAccession);
   }
-
 }
