@@ -10,7 +10,7 @@
     <groupId>uk.ac.ebi.pride</groupId>
     <artifactId>mongo-psm-index-search</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.1-SNAPSHOT-ORCID</version>
     <name>mongo-psm-index-search</name>
 
     <!--
@@ -19,10 +19,10 @@
     -->
 
     <properties>
-        <archive.repo.version>1.0.0</archive.repo.version>
-        <archive.data.provider.api.version>2.0.6</archive.data.provider.api.version>
-        <pride.index.utils.version>1.0.0</pride.index.utils.version>
-        <archive.utils.version>0.1.21</archive.utils.version>
+        <archive.repo.version>1.0.1-SNAPSHOT-ORCID</archive.repo.version>
+        <archive.data.provider.api.version>2.0.10-SNAPSHOT-ORCID</archive.data.provider.api.version>
+        <pride.index.utils.version>1.0.1-SNAPSHOT-ORCID</pride.index.utils.version>
+        <archive.utils.version>0.1.22-SNAPSHOT-ORCID</archive.utils.version>
     </properties>
 
     <build>
