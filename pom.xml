@@ -4,7 +4,7 @@
     <groupId>uk.ac.ebi.pride</groupId>
     <artifactId>mongo-psm-index-search</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.1</version>
     <name>mongo-psm-index-search</name>
 
     <parent>
@@ -235,7 +235,7 @@
         <connection>scm:git:https://github.com/PRIDE-Archive/mongo-psm-index-search.git</connection>
         <developerConnection>scm:git:https://github.com/PRIDE-Archive/mongo-psm-index-search.git</developerConnection>
         <url>scm:git:https://github.com/PRIDE-Archive/mongo-psm-index-search.git</url>
-        <tag>HEAD</tag>
+        <tag>mongo-psm-index-search-1.0.1</tag>
     </scm>
 
 </project>
