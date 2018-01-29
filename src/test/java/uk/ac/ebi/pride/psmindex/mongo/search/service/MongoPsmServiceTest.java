@@ -129,6 +129,11 @@ public class MongoPsmServiceTest {
     MongoPsm psm3 = mongoPsmSearchService.findById(PSM_3_ID);
     assertNotNull(psm3);
     assertEquals(PSM_3_ID, psm3.getId());
+
+    long totalFound = mongoPsmSearchService.countByProjectAccession(PROJECT_1_ACCESSION);
+    assertEquals(1, totalFound);
+    totalFound = mongoPsmSearchService.countByProjectAccession(PROJECT_2_ACCESSION);
+    assertEquals(2, totalFound);
   }
 
   private void addPsm_1() {

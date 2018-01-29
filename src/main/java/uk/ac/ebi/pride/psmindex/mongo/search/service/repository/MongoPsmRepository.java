@@ -21,4 +21,6 @@ public interface MongoPsmRepository extends MongoRepository<MongoPsm, String> {
 
     // Project accession query methods
   List<MongoPsm> findByProjectAccession(String projectAccession);
+
+  long countByProjectAccession(String projectAccession);
 }

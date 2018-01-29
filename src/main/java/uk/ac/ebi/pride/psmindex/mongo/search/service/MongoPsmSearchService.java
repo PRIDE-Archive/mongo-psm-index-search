@@ -47,5 +47,7 @@ public class MongoPsmSearchService {
     return mongoPsmRepository.findByProjectAccession(projectAccession);
   }
 
-
+  public long countByProjectAccession(String projectAccession) {
+    return mongoPsmRepository.countByProjectAccession(projectAccession);
+  }
 }
