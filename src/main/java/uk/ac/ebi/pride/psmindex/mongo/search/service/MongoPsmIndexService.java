@@ -112,7 +112,7 @@ public class MongoPsmIndexService {
    */
   @Transactional
   public void deleteByProjectAccession(String projectAccession) {
-    //Possible improvement, retrieve the ids to be deleted instead of the objects
+    // todo Possible improvement - retrieve the ids to be deleted instead of the objects
     mongoPsmRepository.delete(mongoPsmRepository.findByProjectAccession(projectAccession));
   }
 
