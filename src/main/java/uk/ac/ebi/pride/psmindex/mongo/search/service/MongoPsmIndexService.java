@@ -99,7 +99,7 @@ public class MongoPsmIndexService {
   }
 
   /**
-   * Delets all PSMs in Mongo.
+   * Deletes all PSMs in Mongo.
    */
   @Transactional
   public void deleteAll() {
