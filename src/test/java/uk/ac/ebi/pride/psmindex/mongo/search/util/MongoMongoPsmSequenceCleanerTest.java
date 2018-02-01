@@ -5,6 +5,9 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
+/**
+ * Tests cleaning PSM sequences.
+ */
 public class MongoMongoPsmSequenceCleanerTest {
 
   private static final String PEPSEQ_CLEAN = "MDPNTIIEALR";
@@ -15,8 +18,11 @@ public class MongoMongoPsmSequenceCleanerTest {
   private static final String PEPSEQ_WITH_INVALID_AA = "MoDPNTIIEALR";
   private static final String PEPSEQ_LC = "mdpntiiealr";
 
+  /**
+   * Tests cleaning peptide sequences.
+   */
   @Test
-  public void testCleanPeptideSequence() throws Exception {
+  public void testCleanPeptideSequence() {
     assertEquals(PEPSEQ_CLEAN, MongoPsmSequenceCleaner.cleanPeptideSequence(PEPSEQ_WITH_STAR));
     assertEquals(PEPSEQ_CLEAN, MongoPsmSequenceCleaner.cleanPeptideSequence(PEPSEQ_WITH_AT));
     assertEquals(PEPSEQ_CLEAN, MongoPsmSequenceCleaner.cleanPeptideSequence(PEPSEQ_WITH_NUMBERS));
@@ -26,8 +32,11 @@ public class MongoMongoPsmSequenceCleanerTest {
     assertEquals(PEPSEQ_CLEAN, MongoPsmSequenceCleaner.cleanPeptideSequence(PEPSEQ_LC));
   }
 
+  /**
+   * Tests cleaning a null sequence.
+   */
   @Test
-  public void testCleanNullPeptideSequence() throws Exception {
+  public void testCleanNullPeptideSequence() {
     Assert.assertEquals(null, MongoPsmSequenceCleaner.cleanPeptideSequence(null));
   }
 }

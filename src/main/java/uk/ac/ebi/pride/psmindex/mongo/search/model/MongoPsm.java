@@ -11,6 +11,9 @@ import uk.ac.ebi.pride.indexutils.helpers.ModificationHelper;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Models a PSM to be saved in Mongo.
+ */
 @Document(collection = "psm")
 public class MongoPsm implements PeptideSequenceProvider {
   @Id
@@ -119,81 +122,61 @@ public class MongoPsm implements PeptideSequenceProvider {
   }
 
   public Iterable<CvParamProvider> getSearchEngines() {
-
-    List<CvParamProvider> searchEngines = new ArrayList<CvParamProvider>();
-
+    List<CvParamProvider> searchEngines = new ArrayList<>();
     if (searchEngineAsString != null) {
       for (String se : searchEngineAsString) {
         searchEngines.add(CvParamHelper.convertFromString(se));
       }
     }
-
     return searchEngines;
   }
 
   public void setSearchEngines(List<CvParamProvider> searchEngines) {
-
-    if (searchEngines == null)
-      return;
-
-    List<String> searchEngineAsString = new ArrayList<String>();
-
-    for (CvParamProvider searchEngine : searchEngines) {
-      searchEngineScoreAsString.add(CvParamHelper.convertToString(searchEngine));
+    if (searchEngines != null) {
+      List<String> searchEngineAsString = new ArrayList<>();
+      for (CvParamProvider searchEngine : searchEngines) {
+        searchEngineScoreAsString.add(CvParamHelper.convertToString(searchEngine));
+      }
+      this.searchEngineAsString = searchEngineAsString;
     }
-
-    this.searchEngineAsString = searchEngineAsString;
   }
 
   public void addSearchEngine(CvParamProvider searchEngine) {
-
     if (searchEngineAsString == null) {
-      searchEngineAsString = new ArrayList<String>();
+      searchEngineAsString = new ArrayList<>();
     }
-
     searchEngineAsString.add(CvParamHelper.convertToString(searchEngine));
   }
 
   public Iterable<CvParamProvider> getSearchEngineScores() {
-
-    List<CvParamProvider> searchEngineScores = new ArrayList<CvParamProvider>();
-
+    List<CvParamProvider> searchEngineScores = new ArrayList<>();
     if (searchEngineScoreAsString != null) {
       for (String ses : searchEngineScoreAsString) {
         searchEngineScores.add(CvParamHelper.convertFromString(ses));
       }
     }
-
     return searchEngineScores;
   }
 
   public void setSearchEngineScores(List<CvParamProvider> searchEngineScores) {
-
-    if (searchEngineScores == null)
-      return;
-
-    List<String> searchEngineScoreAsString = new ArrayList<String>();
-
-    for (CvParamProvider searchEngineScore : searchEngineScores) {
-      searchEngineScoreAsString.add(CvParamHelper.convertToString(searchEngineScore));
+    if (searchEngineScores != null) {
+      List<String> searchEngineScoreAsString = new ArrayList<>();
+      for (CvParamProvider searchEngineScore : searchEngineScores) {
+        searchEngineScoreAsString.add(CvParamHelper.convertToString(searchEngineScore));
+      }
+      this.searchEngineScoreAsString = searchEngineScoreAsString;
     }
-
-    this.searchEngineScoreAsString = searchEngineScoreAsString;
   }
 
   public void addSearchEngineScore(CvParamProvider searchEngineScore) {
-
     if (searchEngineScoreAsString == null) {
-      searchEngineScoreAsString = new ArrayList<String>();
+      searchEngineScoreAsString = new ArrayList<>();
     }
-
     searchEngineScoreAsString.add(CvParamHelper.convertToString(searchEngineScore));
   }
 
   public Iterable<ModificationProvider> getModifications() {
-
-    List<ModificationProvider> modifications = new ArrayList<ModificationProvider>();
-
+    List<ModificationProvider> modifications = new ArrayList<>();
     if (modificationsAsString != null) {
       for (String mod : modificationsAsString) {
         if(!mod.isEmpty()) {
@@ -201,45 +184,35 @@ public class MongoPsm implements PeptideSequenceProvider {
         }
       }
     }
-
     return modifications;
   }
 
   public void setModifications(List<ModificationProvider> modifications) {
-
-    if (modifications == null)
-      return;
-
-    List<String> modificationsAsString = new ArrayList<String>();
-    List<String> modificationNames = new ArrayList<String>();
-    List<String> modificationAccessions = new ArrayList<String>();
-
-    for (ModificationProvider modification : modifications) {
-      modificationsAsString.add(ModificationHelper.convertToString(modification));
-      modificationAccessions.add(modification.getAccession());
-      modificationNames.add(modification.getName());
+    if (modifications != null) {
+      List<String> modificationsAsString = new ArrayList<>();
+      List<String> modificationNames = new ArrayList<>();
+      List<String> modificationAccessions = new ArrayList<>();
+      for (ModificationProvider modification : modifications) {
+        modificationsAsString.add(ModificationHelper.convertToString(modification));
+        modificationAccessions.add(modification.getAccession());
+        modificationNames.add(modification.getName());
+      }
+      this.modificationsAsString = modificationsAsString;
+      this.modificationAccessions = modificationAccessions;
+      this.modificationNames = modificationNames;
     }
-
-    this.modificationsAsString = modificationsAsString;
-    this.modificationAccessions = modificationAccessions;
-    this.modificationNames = modificationNames;
   }
 
   public void addModification(ModificationProvider modification) {
-
     if (modificationsAsString == null) {
-      modificationsAsString = new ArrayList<String>();
+      modificationsAsString = new ArrayList<>();
     }
-
     if (modificationAccessions == null) {
-      modificationAccessions = new ArrayList<String>();
+      modificationAccessions = new ArrayList<>();
     }
-
     if (modificationNames == null) {
-      modificationNames = new ArrayList<String>();
+      modificationNames = new ArrayList<>();
     }
-
-
     modificationsAsString.add(ModificationHelper.convertToString(modification));
     modificationAccessions.add(modification.getAccession());
     modificationNames.add(modification.getName());

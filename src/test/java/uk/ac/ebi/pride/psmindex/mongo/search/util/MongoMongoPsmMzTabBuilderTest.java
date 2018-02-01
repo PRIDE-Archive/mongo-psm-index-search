@@ -15,6 +15,9 @@ import java.util.*;
 
 import static junit.framework.Assert.*;
 
+/**
+ * Tests building PSMs from mzTab files.
+ */
 public class MongoMongoPsmMzTabBuilderTest {
 
   private static Logger logger = LoggerFactory.getLogger(MongoMongoPsmMzTabBuilderTest.class);
@@ -35,6 +38,10 @@ public class MongoMongoPsmMzTabBuilderTest {
   private static final int NUM_ASSAYS = 2;
 
 
+  /**
+   * Reads in mzTab files.
+   * @throws Exception problems reading mzTab files
+   */
   @BeforeClass
   public static void initialise() throws Exception {
     mzTabFileP1A1 = new MZTabFileParser(
@@ -48,6 +55,10 @@ public class MongoMongoPsmMzTabBuilderTest {
         errorLogOutputStream).getMZTabFile();
   }
 
+  /**
+   * Tests reading PSMs from mzTab files.
+   * @throws Exception problems reading mzTab files
+   */
   @Test
   public void testReadPsmsFromMzTabFilesDirectory() throws Exception {
     Map<String, List<MongoPsm>> psms = new HashMap<>();
@@ -61,6 +72,10 @@ public class MongoMongoPsmMzTabBuilderTest {
     }
   }
 
+  /**
+   * Tests reading PSMs from ab mztab file, including extra comparison checks.
+   * @throws Exception problems reading mzTab files
+   */
   @Test
   public void testReadPsmFromMzTabFileAndCompare() throws Exception {
     Map<String, List<MongoPsm>> psms = new HashMap<>();
@@ -85,6 +100,10 @@ public class MongoMongoPsmMzTabBuilderTest {
     assertEquals((Integer) 92, firstPsm.getEndPosition());
   }
 
+  /**
+   * Chceks modifications are correct.
+   * @param modifications modifications to check
+   */
   private void checkModifications(Iterable<ModificationProvider> modifications) {
     Iterator<ModificationProvider> iterator = modifications.iterator();
     ModificationProvider mod = iterator.next();
@@ -105,6 +124,10 @@ public class MongoMongoPsmMzTabBuilderTest {
     assertEquals((Integer) 29, mod.getMainPosition());
   }
 
+  /**
+   * Checks search enginges are correct.
+   * @param searchEngines  search enginges to check
+   */
   private void checkSearchEngine(Iterable<CvParamProvider> searchEngines) {
     CvParamProvider cvParamProvider = searchEngines.iterator().next();
     assertEquals("MS", cvParamProvider.getCvLabel());
@@ -113,6 +136,10 @@ public class MongoMongoPsmMzTabBuilderTest {
     assertEquals(null, cvParamProvider.getValue());
   }
 
+  /**
+   * Check search engine scores are correct.
+   * @param searchEngineScores search engine scores to check.
+   */
   private void checkSearchEnginesScores(Iterable<CvParamProvider> searchEngineScores) {
     CvParamProvider cvParamProvider = searchEngineScores.iterator().next();
     assertEquals("PRIDE", cvParamProvider.getCvLabel());

@@ -5,11 +5,8 @@ import org.slf4j.Logger;
 import java.io.OutputStream;
 
 /**
- * @author Jose A. Dianes
- * @version $Id$
- *
+ * Outputs the log to a stream.
  * Adapted from: http://www.java2s.com/Open-Source/Java/Testing/jacareto/jacareto/toolkit/log4j/LogOutputStream.java.htm
- *
  */
 public class ErrorLogOutputStream extends OutputStream {
 
@@ -49,18 +46,16 @@ public class ErrorLogOutputStream extends OutputStream {
   }
 
   /**
-   * Writes a byte to the output stream. This method flushes automatically at the end of a line.
+   * Writes a byte to the output stream.
    *
-   * @param b DOCUMENT ME!
+   * @param b byte to write
    */
   public void write (int b) {
     byte[] bytes = new byte[1];
     bytes[0] = (byte) (b & 0xff);
     mem = mem + new String(bytes);
-
     if (mem.endsWith ("\n")) {
       mem = mem.substring (0, mem.length () - 1);
-//            flush ();
     }
   }
 

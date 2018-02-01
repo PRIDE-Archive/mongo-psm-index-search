@@ -26,17 +26,25 @@ public class MongoPsmMzTabBuilder {
    * The map between the assay accession and the file need to be provided externally from the database
    *
    * @return A map of assay accessions to PSMs
-   * @throws java.io.IOException
+   * @throws java.io.IOException problems reading from the mzTab file
    */
   public static List<MongoPsm> readPsmsFromMzTabFile(String projectAccession, String assayAccession, MZTabFile mzTabFile) throws IOException, MZTabException {
-    List<MongoPsm> res = new LinkedList<>();
+    List<MongoPsm> result = new LinkedList<>();
     if (mzTabFile != null) {
-      res = convertFromMzTabPsmsToPrideArchivePsms(mzTabFile.getPSMs(), mzTabFile.getMetadata(), projectAccession, assayAccession);
-      logger.debug("Found " + res.size() + " psms for Assay " + assayAccession + " in file " + mzTabFile);
+      result = convertFromMzTabPsmsToPrideArchivePsms(mzTabFile.getPSMs(), mzTabFile.getMetadata(), projectAccession, assayAccession);
+      logger.debug("Found " + result.size() + " psms for Assay " + assayAccession + " in file " + mzTabFile);
     }
-    return res;
+    return result;
   }
 
+  /**
+   * Converts from mzTab-PSMs to Archive-compatible PSMs.
+   * @param mzTabPsms maTab PSMs
+   * @param metadata PSM metadata
+   * @param projectAccession the Archive project accession number
+   * @param assayAccession the Archive assay accession number
+   * @return list of  Archive-compatible PSMs.
+   */
   private static LinkedList<MongoPsm> convertFromMzTabPsmsToPrideArchivePsms(Collection<PSM> mzTabPsms, Metadata metadata, String projectAccession, String assayAccession) {
     LinkedList<MongoPsm> res = new LinkedList<MongoPsm>();
     for (PSM mzTabPsm : mzTabPsms) {
@@ -110,7 +118,7 @@ public class MongoPsmMzTabBuilder {
   }
 
   /**
-   * Creates a spectrum Id compatible with PRIDE 3
+   * Creates a spectrum Id compatible with PRIDE Archive
    *
    * @param psm              original mzTab psm
    * @param projectAccession PRIDE Archive accession

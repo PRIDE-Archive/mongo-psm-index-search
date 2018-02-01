@@ -11,7 +11,7 @@ import javax.annotation.Resource;
 import java.util.Collection;
 
 /**
- * Created by tobias on 08/03/2017.
+ * Indexes PSMs into Mongo.
  */
 @Service
 public class MongoPsmIndexService {
@@ -21,18 +21,33 @@ public class MongoPsmIndexService {
   @Resource
   private MongoPsmRepository mongoPsmRepository;
 
+  /**
+   * Initializes the service.
+   */
   public MongoPsmIndexService() {
   }
 
+  /**
+   * Sets the Mongo repository.
+   * @param mongoPsmRepository the Mongo PSM repository.
+   */
   public void setMongoPsmRepository(MongoPsmRepository mongoPsmRepository) {
     this.mongoPsmRepository = mongoPsmRepository;
   }
 
+  /**
+   * Saves a PSM to Mongo.
+   * @param psm the PSM to save.
+   */
   @Transactional
   public void save(MongoPsm psm) {
     mongoPsmRepository.save(psm);
   }
 
+  /**
+   * Saves PSMs to Mongo.
+   * @param psms the PSMs to save.
+   */
   @Transactional
   public void save(Iterable<MongoPsm> psms) {
     if (psms==null || !psms.iterator().hasNext())
@@ -45,6 +60,10 @@ public class MongoPsmIndexService {
     }
   }
 
+  /**
+   * Output debug information related to PSMs.
+   * @param psms PSMs to debug
+   */
   private void debugSavePsm(Iterable<MongoPsm> psms) {
     int i = 0;
     for (MongoPsm psm : psms) {
@@ -57,11 +76,19 @@ public class MongoPsmIndexService {
     }
   }
 
+  /**
+   * Deletes a PSM from Mongo.
+   * @param psm the PSM to delete
+   */
   @Transactional
   public void delete(MongoPsm psm){
     mongoPsmRepository.delete(psm);
   }
 
+  /**
+   * Deletes PSMs from Mongo.
+   * @param psms the PSMs to delete
+   */
   @Transactional
   public void delete(Iterable<MongoPsm> psms){
     if (psms==null || !psms.iterator().hasNext())
@@ -71,17 +98,29 @@ public class MongoPsmIndexService {
     }
   }
 
+  /**
+   * Delets all PSMs in Mongo.
+   */
   @Transactional
   public void deleteAll() {
     mongoPsmRepository.deleteAll();
   }
 
+  /**
+   * Deletes all PSMs in Mongo for a project.
+   * @param projectAccession the project's accession number to delete PSMs
+   */
   @Transactional
   public void deleteByProjectAccession(String projectAccession) {
     //Possible improvement, retrieve the ids to be deleted instead of the objects
     mongoPsmRepository.delete(mongoPsmRepository.findByProjectAccession(projectAccession));
   }
 
+  /**
+   * Saves PSMs to Mongo.
+   * @param psms the PSMs to save
+   * @return PSMs that were successfully saved.
+   */
   @Transactional
   public Iterable<MongoPsm> save(Collection<MongoPsm> psms) {
     return mongoPsmRepository.save(psms);

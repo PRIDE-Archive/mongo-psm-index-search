@@ -26,6 +26,9 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
+/**
+ * Tests to index PSMs.
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:spring-mongo-test-context.xml"})
 public class MongoProjectMongoPsmIndexerTest {
@@ -38,14 +41,7 @@ public class MongoProjectMongoPsmIndexerTest {
   private static final String PROJECT_1_ASSAY_2 = "32416";
   private static final String PROJECT_2_ASSAY_1 = "00001";
   private static final int NUM_PSMS_PROJECT_1 = 4;
-  private static final int NUM_PSMS_P1A1 = 3;
-  private static final int NUM_PSMS_P1A2 = 1;
   private static final int NUM_PSMS_PROJECT_2 = 7;
-  private static final int NUM_PSMS_P2A1 = 7;
-  private static final String PSM3_ID = "3";
-  private static MZTabFile mzTabFileP1A1;
-  private static MZTabFile mzTabFileP1A2;
-  private static MZTabFile mzTabFileP2A1;
   private static final String PSM_3_ID = "TEST-PSM-ID3";
   private static final String PSM_3_REPORTED_ID = "TEST-PSM-REPORTED-ID3";
   private static final String PSM_3_SEQUENCE = "YSQPEDSLIPFFEITVPE";
@@ -72,25 +68,29 @@ public class MongoProjectMongoPsmIndexerTest {
   @Resource
   private MongoPsmSearchService mongoPsmSearchService;
 
+  /**
+   * Sets up the repo by first ensuring all data are deleted, and test data are inserted.
+   * @throws Exception problems deleting or inserting data.
+   */
   @Before
   public void setup() throws Exception {
     mongoProjectPsmIndexer = new MongoProjectPsmIndexer(mongoPsmIndexService);
-    deleteAllData();
+    mongoPsmIndexService.deleteAll();
     insertTestData();
   }
 
-  private void deleteAllData() {
-    mongoPsmIndexService.deleteAll();
-  }
-
+  /**
+   * Inserts test data
+   * @throws IOException problems inserting test data
+   */
   private void insertTestData() throws IOException {
-    mzTabFileP1A1 = new MZTabFileParser(
+    MZTabFile mzTabFileP1A1 = new MZTabFileParser(
         new File("src/test/resources/submissions/2014/01/PXD000581/generated/PRIDE_Exp_Complete_Ac_32411.mztab"),
         errorLogOutputStream).getMZTabFile();
-    mzTabFileP1A2 = new MZTabFileParser(
+    MZTabFile mzTabFileP1A2 = new MZTabFileParser(
         new File("src/test/resources/submissions/2014/01/PXD000581/generated/PRIDE_Exp_Complete_Ac_32416.mztab"),
         errorLogOutputStream).getMZTabFile();
-    mzTabFileP2A1 = new MZTabFileParser(
+    MZTabFile mzTabFileP2A1 = new MZTabFileParser(
         new File("src/test/resources/submissions/TST000121/generated/PRIDE_Exp_Complete_Ac_00001.mztab"),
         errorLogOutputStream).getMZTabFile();
     mongoProjectPsmIndexer.indexAllPsmsForProjectAndAssay(PROJECT_1_ACCESSION, PROJECT_1_ASSAY_1, mzTabFileP1A1);
@@ -98,22 +98,31 @@ public class MongoProjectMongoPsmIndexerTest {
     mongoProjectPsmIndexer.indexAllPsmsForProjectAndAssay(PROJECT_2_ACCESSION, PROJECT_2_ASSAY_1, mzTabFileP2A1);
   }
 
+  /**
+   * Deletes test data.
+   */
   @After
-  public void tearDown() throws Exception {
+  public void tearDown() {
     mongoProjectPsmIndexer.deleteAllPsmsForProject(PROJECT_1_ACCESSION);
     mongoProjectPsmIndexer.deleteAllPsmsForProject(PROJECT_2_ACCESSION);
     List<MongoPsm> psms = mongoPsmSearchService.findByProjectAccession(PROJECT_1_ACCESSION);
     assertEquals(0, psms.size());
   }
 
+  /**
+   * Indexes PSMs for an assay.
+   */
   @Test
-  public void testIndexAllPsmsForProjectAndAssay() throws Exception {
+  public void testIndexAllPsmsForProjectAndAssay() {
     List<MongoPsm> psms = mongoPsmSearchService.findByProjectAccession(PROJECT_1_ACCESSION);
     assertEquals(NUM_PSMS_PROJECT_1, psms.size());
     psms = mongoPsmSearchService.findByProjectAccession(PROJECT_2_ACCESSION);
     assertEquals(NUM_PSMS_PROJECT_2, psms.size());
   }
 
+  /**
+   * Adds PSMs with neutral loss.
+   */
   @Test
   public void addPsmWithNeutralLoss() {
     MongoPsm psm = new MongoPsm();

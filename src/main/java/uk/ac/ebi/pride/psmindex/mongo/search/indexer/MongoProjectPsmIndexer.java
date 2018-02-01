@@ -13,6 +13,9 @@ import java.time.temporal.ChronoUnit;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Indexes a project's PSMs in Mongo.
+ */
 public class MongoProjectPsmIndexer {
 
   private static Logger logger = LoggerFactory.getLogger(MongoProjectPsmIndexer.class.getName());
@@ -20,10 +23,20 @@ public class MongoProjectPsmIndexer {
   @Resource
   private MongoPsmIndexService mongoPsmIndexService;
 
+  /**
+   * Constructor, sets the indexing service.
+   * @param mongoPsmIndexService the indexing service
+   */
   public MongoProjectPsmIndexer(MongoPsmIndexService mongoPsmIndexService) {
     this.mongoPsmIndexService = mongoPsmIndexService;
   }
 
+  /**
+   * Indexes all PSMs for all assay for a project
+   * @param projectAccession the project's accession number to index
+   * @param assayAccession the project's assay accession number to index
+   * @param mzTabFile the mzTab file tom index
+   */
   public void indexAllPsmsForProjectAndAssay(String projectAccession, String assayAccession, MZTabFile mzTabFile){
     List<MongoPsm> psms = new LinkedList<>();
     Instant startTime = Instant.now();
@@ -42,6 +55,10 @@ public class MongoProjectPsmIndexer {
       + " in " + ChronoUnit.SECONDS.between(startTime,Instant.now()) + " seconds");
   }
 
+  /**
+   * Deletes all PSMs for a project.
+   * @param projectAccession the project's accession number to delete PSMs
+   */
   public void deleteAllPsmsForProject(String projectAccession) {
     mongoPsmIndexService.deleteByProjectAccession(projectAccession);
   }

@@ -19,6 +19,9 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+/**
+ * Tests the PSM service.
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:spring-mongo-test-context.xml")
 public class MongoPsmServiceTest {
@@ -97,27 +100,35 @@ public class MongoPsmServiceTest {
   @Resource
   private MongoPsmSearchService mongoPsmSearchService;
 
+  /**
+   * Ensures all existing data are deleted, and inserts test data.
+   */
   @Before
-  public void setUp() throws Exception {
-    deleteAllData();
+  public void setUp() {
+    mongoPsmIndexService.deleteAll();
     insertTestData();
   }
 
+  /**
+   * Deletes test data
+   */
   @After
-  public void tearDown() throws Exception {
-    deleteAllData();
-  }
-
-  private void deleteAllData() {
+  public void tearDown() {
     mongoPsmIndexService.deleteAll();
   }
 
+  /**
+   * Inserts test data.
+   */
   private void insertTestData() {
-    addPsm_1();
-    addPsm_2();
-    addPsm_3();
+    addPsm(PSM_1_ID, PSM_1_REPORTED_ID, PSM_1_SEQUENCE, PSM_1_SPECTRUM, PROTEIN_1_ACCESSION, PROJECT_1_ACCESSION, ASSAY_1_ACCESSION);
+    addPsm(PSM_2_ID, PSM_2_REPORTED_ID, PSM_2_SEQUENCE, PSM_2_SPECTRUM, PROTEIN_2_ACCESSION, PROJECT_2_ACCESSION, ASSAY_2_ACCESSION);
+    addPsm(PSM_3_ID, PSM_3_REPORTED_ID, PSM_3_SEQUENCE, PSM_3_SPECTRUM, PROTEIN_2_ACCESSION, PROJECT_2_ACCESSION, ASSAY_2_ACCESSION);
   }
 
+  /**
+   * Tests searching by ID.
+   */
   @Test
   public void testSearchById() {
     MongoPsm psm1= mongoPsmSearchService.findById(PSM_1_ID);
@@ -129,46 +140,40 @@ public class MongoPsmServiceTest {
     MongoPsm psm3 = mongoPsmSearchService.findById(PSM_3_ID);
     assertNotNull(psm3);
     assertEquals(PSM_3_ID, psm3.getId());
+  }
 
+  /**
+   * Tests counting by project accession.
+   */
+  @Test
+  public void testCountByProjectAccession() {
     long totalFound = mongoPsmSearchService.countByProjectAccession(PROJECT_1_ACCESSION);
     assertEquals(1, totalFound);
     totalFound = mongoPsmSearchService.countByProjectAccession(PROJECT_2_ACCESSION);
     assertEquals(2, totalFound);
   }
 
-  private void addPsm_1() {
-    MongoPsm psm = new MongoPsm();
-    psm.setId(PSM_1_ID);
-    psm.setReportedId(PSM_1_REPORTED_ID);
-    psm.setPeptideSequence(PSM_1_SEQUENCE);
-    psm.setSpectrumId(PSM_1_SPECTRUM);
-    psm.setProteinAccession(PROTEIN_1_ACCESSION);
-    psm.setProjectAccession(PROJECT_1_ACCESSION);
-    psm.setAssayAccession(ASSAY_1_ACCESSION);
-    Modification mod1 = new Modification();
-    mod1.addPosition(MOD_1_POS, null);
-    mod1.setAccession(MOD_1_ACCESSION);
-    mod1.setName(MOD_1_NAME);
-    Modification mod2 = new Modification();
-    mod2.addPosition(MOD_2_POS, null);
-    mod2.setAccession(MOD_2_ACCESSION);
-    List<ModificationProvider> modifications = new LinkedList<ModificationProvider>();
-    modifications.add(mod1);
-    modifications.add(mod2);
-    mod2.setName(MOD_2_NAME);
-    psm.setModifications(modifications);
-    mongoPsmIndexService.save(psm);
-  }
 
-  private void addPsm_2() {
+  /**
+   * Adds a PSM
+   * @param psmId the PSM ID
+   * @param psmReportedId the PSM reported ID
+   * @param psmSequence the PSM sequence
+   * @param psmSpectrum the PSM spectrum
+   * @param proteinAcccession the protein accession
+   * @param projectAccession the project accession
+   * @param assayAccession the assay accession
+   */
+  private void addPsm(String psmId, String psmReportedId, String psmSequence, String psmSpectrum, String proteinAcccession, String projectAccession,
+                      String assayAccession) {
     MongoPsm psm = new MongoPsm();
-    psm.setId(PSM_2_ID);
-    psm.setReportedId(PSM_2_REPORTED_ID);
-    psm.setPeptideSequence(PSM_2_SEQUENCE);
-    psm.setSpectrumId(PSM_2_SPECTRUM);
-    psm.setProteinAccession(PROTEIN_2_ACCESSION);
-    psm.setProjectAccession(PROJECT_2_ACCESSION);
-    psm.setAssayAccession(ASSAY_2_ACCESSION);
+    psm.setId(psmId);
+    psm.setReportedId(psmReportedId);
+    psm.setPeptideSequence(psmSequence);
+    psm.setSpectrumId(psmSpectrum);
+    psm.setProteinAccession(proteinAcccession);
+    psm.setProjectAccession(projectAccession);
+    psm.setAssayAccession(assayAccession);
     Modification mod1 = new Modification();
     mod1.addPosition(MOD_1_POS, null);
     mod1.setAccession(MOD_1_ACCESSION);
@@ -177,31 +182,7 @@ public class MongoPsmServiceTest {
     mod2.addPosition(MOD_2_POS, null);
     mod2.setAccession(MOD_2_ACCESSION);
     mod2.setName(MOD_2_NAME);
-    List<ModificationProvider> modifications = new LinkedList<ModificationProvider>();
-    modifications.add(mod1);
-    modifications.add(mod2);
-    psm.setModifications(modifications);
-    mongoPsmIndexService.save(psm);
-  }
-
-  private void addPsm_3() {
-    MongoPsm psm = new MongoPsm();
-    psm.setId(PSM_3_ID);
-    psm.setReportedId(PSM_3_REPORTED_ID);
-    psm.setPeptideSequence(PSM_3_SEQUENCE);
-    psm.setSpectrumId(PSM_3_SPECTRUM);
-    psm.setProteinAccession(PROTEIN_2_ACCESSION);
-    psm.setProjectAccession(PROJECT_2_ACCESSION);
-    psm.setAssayAccession(ASSAY_2_ACCESSION);
-    Modification mod1 = new Modification();
-    mod1.addPosition(MOD_1_POS, null);
-    mod1.setAccession(MOD_1_ACCESSION);
-    mod1.setName(MOD_1_NAME);
-    Modification mod2 = new Modification();
-    mod2.addPosition(MOD_2_POS, null);
-    mod2.setAccession(MOD_2_ACCESSION);
-    mod2.setName(MOD_2_NAME);
-    List<ModificationProvider> modifications = new LinkedList<ModificationProvider>();
+    List<ModificationProvider> modifications = new LinkedList<>();
     modifications.add(mod1);
     modifications.add(mod2);
     psm.setModifications(modifications);
