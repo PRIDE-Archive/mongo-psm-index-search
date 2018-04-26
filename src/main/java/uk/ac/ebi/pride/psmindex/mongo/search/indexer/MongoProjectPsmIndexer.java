@@ -85,4 +85,40 @@ public class MongoProjectPsmIndexer {
               .getContent());
     }
   }
+
+  /**
+   * Gets mongoPsmSearchService.
+   *
+   * @return Value of mongoPsmSearchService.
+   */
+  public MongoPsmSearchService getMongoPsmSearchService() {
+    return mongoPsmSearchService;
+  }
+
+  /**
+   * Gets mongoPsmIndexService.
+   *
+   * @return Value of mongoPsmIndexService.
+   */
+  public MongoPsmIndexService getMongoPsmIndexService() {
+    return mongoPsmIndexService;
+  }
+
+  /**
+   * Sets new mongoPsmSearchService.
+   *
+   * @param mongoPsmSearchService New value of mongoPsmSearchService.
+   */
+  public void setMongoPsmSearchService(MongoPsmSearchService mongoPsmSearchService) {
+    this.mongoPsmSearchService = mongoPsmSearchService;
+  }
+
+  /**
+   * Sets new mongoPsmIndexService.
+   *
+   * @param mongoPsmIndexService New value of mongoPsmIndexService.
+   */
+  public void setMongoPsmIndexService(MongoPsmIndexService mongoPsmIndexService) {
+    this.mongoPsmIndexService = mongoPsmIndexService;
+  }
 }

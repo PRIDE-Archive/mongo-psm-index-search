@@ -72,6 +72,8 @@ public class MongoProjectPsmIndexerTest {
   public void setup() throws Exception {
     mongoProjectPsmIndexer =
         new MongoProjectPsmIndexer(mongoPsmIndexService, mongoPsmSearchService);
+	mongoProjectPsmIndexer.setMongoPsmIndexService(mongoProjectPsmIndexer.getMongoPsmIndexService());
+	mongoProjectPsmIndexer.setMongoPsmSearchService(mongoProjectPsmIndexer.getMongoPsmSearchService());
     mongoPsmIndexService.deleteAll();
     insertTestData();
   }
