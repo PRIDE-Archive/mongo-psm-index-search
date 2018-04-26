@@ -16,7 +16,7 @@
     </parent>
 
     <properties>
-        <archive.repo.version>1.0.2-SNAPSHOT-springboot</archive.repo.version>
+        <archive.repo.version>1.0.2-springboot-SNAPSHOT</archive.repo.version>
         <archive.data.provider.api.version>2.0.11</archive.data.provider.api.version>
         <pride.index.utils.version>1.0.1</pride.index.utils.version>
         <archive.utils.version>1.0.0-springboot-SNAPSHOT</archive.utils.version>
