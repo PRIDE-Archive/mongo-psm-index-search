@@ -13,8 +13,8 @@
         </encoder>
     </appender>
 
-    <!--override to INFO level in all pride -->
-    <logger name="uk.ac.ebi.pride.psmindex.search" level="info"/>
+    <!-- override to DEBUG level -->
+    <logger name="uk.ac.ebi.pride.psmindex.search" level="debug"/>
     <logger name="org.springframework.data.mongodb" level="debug"/>
 
     <root level="debug">
