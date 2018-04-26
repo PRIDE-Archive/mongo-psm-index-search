@@ -155,8 +155,8 @@ public class MongoProjectPsmIndexerTest {
     modifications.add(mod3);
     psm.setModifications(modifications);
     mongoPsmIndexService.save(psm);
-    Iterable<MongoPsm> mongoPsmIterable = new ArrayList<>();
-    ((ArrayList<MongoPsm>) mongoPsmIterable).add(psm);
-    mongoPsmIndexService.save(mongoPsmIterable);
+    List<MongoPsm> mongoPsms = new ArrayList<>();
+	mongoPsms.add(psm);
+    mongoPsmIndexService.save(mongoPsms);
   }
 }
