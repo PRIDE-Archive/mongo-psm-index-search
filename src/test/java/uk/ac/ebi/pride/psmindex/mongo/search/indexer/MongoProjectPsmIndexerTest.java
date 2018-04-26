@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.psmindex.mongo.search.indexer;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,6 +14,7 @@ import uk.ac.ebi.pride.indexutils.modifications.Modification;
 import uk.ac.ebi.pride.indexutils.params.CvParam;
 import uk.ac.ebi.pride.jmztab.model.MZTabFile;
 import uk.ac.ebi.pride.jmztab.utils.MZTabFileParser;
+import uk.ac.ebi.pride.psmindex.mongo.search.config.MongoTestConfiguration;
 import uk.ac.ebi.pride.psmindex.mongo.search.model.MongoPsm;
 import uk.ac.ebi.pride.psmindex.mongo.search.service.MongoPsmIndexService;
 import uk.ac.ebi.pride.psmindex.mongo.search.service.MongoPsmSearchService;
@@ -21,18 +23,15 @@ import uk.ac.ebi.pride.psmindex.mongo.search.util.ErrorLogOutputStream;
 import javax.annotation.Resource;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-
-/**
- * Tests to index PSMs.
- */
+/** Tests to index PSMs. */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:spring-mongo-test-context.xml"})
-public class MongoProjectMongoPsmIndexerTest {
-  private static Logger logger = LoggerFactory.getLogger(MongoProjectMongoPsmIndexerTest.class);
+@ContextConfiguration(classes = {MongoTestConfiguration.class})
+public class MongoProjectPsmIndexerTest {
+  private static Logger logger = LoggerFactory.getLogger(MongoProjectPsmIndexerTest.class);
   private static ErrorLogOutputStream errorLogOutputStream = new ErrorLogOutputStream(logger);
 
   private static final String PROJECT_1_ACCESSION = "PXD000581";
@@ -61,68 +60,73 @@ public class MongoProjectMongoPsmIndexerTest {
   private static final Integer NEUTRAL_LOSS_POS = 7;
 
   private MongoProjectPsmIndexer mongoProjectPsmIndexer;
-
-  @Resource
-  private MongoPsmIndexService mongoPsmIndexService;
-
-  @Resource
-  private MongoPsmSearchService mongoPsmSearchService;
+  @Resource private MongoPsmIndexService mongoPsmIndexService;
+  @Resource private MongoPsmSearchService mongoPsmSearchService;
 
   /**
    * Sets up the repo by first ensuring all data are deleted, and test data are inserted.
+   *
    * @throws Exception problems deleting or inserting data.
    */
   @Before
   public void setup() throws Exception {
-    mongoProjectPsmIndexer = new MongoProjectPsmIndexer(mongoPsmIndexService);
+    mongoProjectPsmIndexer =
+        new MongoProjectPsmIndexer(mongoPsmIndexService, mongoPsmSearchService);
     mongoPsmIndexService.deleteAll();
     insertTestData();
   }
 
   /**
    * Inserts test data
+   *
    * @throws IOException problems inserting test data
    */
   private void insertTestData() throws IOException {
-    MZTabFile mzTabFileP1A1 = new MZTabFileParser(
-        new File("src/test/resources/submissions/2014/01/PXD000581/generated/PRIDE_Exp_Complete_Ac_32411.mztab"),
-        errorLogOutputStream).getMZTabFile();
-    MZTabFile mzTabFileP1A2 = new MZTabFileParser(
-        new File("src/test/resources/submissions/2014/01/PXD000581/generated/PRIDE_Exp_Complete_Ac_32416.mztab"),
-        errorLogOutputStream).getMZTabFile();
-    MZTabFile mzTabFileP2A1 = new MZTabFileParser(
-        new File("src/test/resources/submissions/TST000121/generated/PRIDE_Exp_Complete_Ac_00001.mztab"),
-        errorLogOutputStream).getMZTabFile();
-    mongoProjectPsmIndexer.indexAllPsmsForProjectAndAssay(PROJECT_1_ACCESSION, PROJECT_1_ASSAY_1, mzTabFileP1A1);
-    mongoProjectPsmIndexer.indexAllPsmsForProjectAndAssay(PROJECT_1_ACCESSION, PROJECT_1_ASSAY_2, mzTabFileP1A2);
-    mongoProjectPsmIndexer.indexAllPsmsForProjectAndAssay(PROJECT_2_ACCESSION, PROJECT_2_ASSAY_1, mzTabFileP2A1);
+    MZTabFile mzTabFileP1A1 =
+        new MZTabFileParser(
+                new File(
+                    "src/test/resources/submissions/2014/01/PXD000581/generated/PRIDE_Exp_Complete_Ac_32411.mztab"),
+                errorLogOutputStream)
+            .getMZTabFile();
+    MZTabFile mzTabFileP1A2 =
+        new MZTabFileParser(
+                new File(
+                    "src/test/resources/submissions/2014/01/PXD000581/generated/PRIDE_Exp_Complete_Ac_32416.mztab"),
+                errorLogOutputStream)
+            .getMZTabFile();
+    MZTabFile mzTabFileP2A1 =
+        new MZTabFileParser(
+                new File(
+                    "src/test/resources/submissions/TST000121/generated/PRIDE_Exp_Complete_Ac_00001.mztab"),
+                errorLogOutputStream)
+            .getMZTabFile();
+    mongoProjectPsmIndexer.indexAllPsmsForProjectAndAssay(
+        PROJECT_1_ACCESSION, PROJECT_1_ASSAY_1, mzTabFileP1A1);
+    mongoProjectPsmIndexer.indexAllPsmsForProjectAndAssay(
+        PROJECT_1_ACCESSION, PROJECT_1_ASSAY_2, mzTabFileP1A2);
+    mongoProjectPsmIndexer.indexAllPsmsForProjectAndAssay(
+        PROJECT_2_ACCESSION, PROJECT_2_ASSAY_1, mzTabFileP2A1);
   }
 
-  /**
-   * Deletes test data.
-   */
+  /** Deletes test data. */
   @After
   public void tearDown() {
     mongoProjectPsmIndexer.deleteAllPsmsForProject(PROJECT_1_ACCESSION);
     mongoProjectPsmIndexer.deleteAllPsmsForProject(PROJECT_2_ACCESSION);
     List<MongoPsm> psms = mongoPsmSearchService.findByProjectAccession(PROJECT_1_ACCESSION);
-    assertEquals(0, psms.size());
+    Assert.assertEquals(0, psms.size());
   }
 
-  /**
-   * Indexes PSMs for an assay.
-   */
+  /** Indexes PSMs for an assay. */
   @Test
   public void testIndexAllPsmsForProjectAndAssay() {
     List<MongoPsm> psms = mongoPsmSearchService.findByProjectAccession(PROJECT_1_ACCESSION);
-    assertEquals(NUM_PSMS_PROJECT_1, psms.size());
+    Assert.assertEquals(NUM_PSMS_PROJECT_1, psms.size());
     psms = mongoPsmSearchService.findByProjectAccession(PROJECT_2_ACCESSION);
-    assertEquals(NUM_PSMS_PROJECT_2, psms.size());
+    Assert.assertEquals(NUM_PSMS_PROJECT_2, psms.size());
   }
 
-  /**
-   * Adds PSMs with neutral loss.
-   */
+  /** Adds PSMs with neutral loss. */
   @Test
   public void addPsmWithNeutralLoss() {
     MongoPsm psm = new MongoPsm();
@@ -143,12 +147,16 @@ public class MongoProjectMongoPsmIndexerTest {
     mod2.setName(MOD_2_NAME);
     Modification mod3 = new Modification();
     mod3.addPosition(NEUTRAL_LOSS_POS, null);
-    mod3.setNeutralLoss(new CvParam(NEUTRAL_LOSS_ONT, NEUTRAL_LOSS_ACC, NEUTRAL_LOSS_NAME, NEUTRAL_LOSS_VAL));
+    mod3.setNeutralLoss(
+        new CvParam(NEUTRAL_LOSS_ONT, NEUTRAL_LOSS_ACC, NEUTRAL_LOSS_NAME, NEUTRAL_LOSS_VAL));
     List<ModificationProvider> modifications = new LinkedList<>();
     modifications.add(mod1);
     modifications.add(mod2);
     modifications.add(mod3);
     psm.setModifications(modifications);
     mongoPsmIndexService.save(psm);
+    Iterable<MongoPsm> mongoPsmIterable = new ArrayList<>();
+    ((ArrayList<MongoPsm>) mongoPsmIterable).add(psm);
+    mongoPsmIndexService.save(mongoPsmIterable);
   }
 }

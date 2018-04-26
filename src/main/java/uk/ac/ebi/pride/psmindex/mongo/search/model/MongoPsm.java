@@ -11,16 +11,15 @@ import uk.ac.ebi.pride.indexutils.helpers.ModificationHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Models a PSM to be saved in Mongo.
- */
+/** Models a PSM to be saved in Mongo. */
 @Document(collection = "psm")
 public class MongoPsm implements PeptideSequenceProvider {
-  @Id
-  private String id;
+  /* If the psm was discovered as a combination of several spectra, we will simplify the case
+  by choosing only the first spectrum and the first retention time */
+  @Id private String id;
   private String reportedId;
   private String peptideSequence;
-  private String spectrumId;   // If the psm was discovered as a combination of several spectra, we will  simplify the case choosing only the first spectrum
+  private String spectrumId;
   private String proteinAccession;
   private String database;
   private String databaseVersion;
@@ -32,7 +31,7 @@ public class MongoPsm implements PeptideSequenceProvider {
   private Boolean unique;
   private List<String> searchEngineAsString;
   private List<String> searchEngineScoreAsString;
-  private Double retentionTime;   // If the psm was discovered as a combination of several spectra, we will simplify the case choosing only the first spectrum and the first retention time
+  private Double retentionTime;
   private Integer charge;
   private Double expMassToCharge;
   private Double calculatedMassToCharge;
@@ -40,6 +39,14 @@ public class MongoPsm implements PeptideSequenceProvider {
   private String postAminoAcid;
   private Integer startPosition;
   private Integer endPosition;
+
+  public MongoPsm() {
+    modificationsAsString = new ArrayList<>();
+    modificationNames = new ArrayList<>();
+    modificationAccessions = new ArrayList<>();
+    searchEngineAsString = new ArrayList<>();
+    searchEngineScoreAsString = new ArrayList<>();
+  }
 
   public String getId() {
     return id;
@@ -123,10 +130,8 @@ public class MongoPsm implements PeptideSequenceProvider {
 
   public Iterable<CvParamProvider> getSearchEngines() {
     List<CvParamProvider> searchEngines = new ArrayList<>();
-    if (searchEngineAsString != null) {
-      for (String se : searchEngineAsString) {
-        searchEngines.add(CvParamHelper.convertFromString(se));
-      }
+    for (String searchEnginge : searchEngineAsString) {
+      searchEngines.add(CvParamHelper.convertFromString(searchEnginge));
     }
     return searchEngines;
   }
@@ -135,16 +140,13 @@ public class MongoPsm implements PeptideSequenceProvider {
     if (searchEngines != null) {
       List<String> searchEngineAsString = new ArrayList<>();
       for (CvParamProvider searchEngine : searchEngines) {
-        searchEngineScoreAsString.add(CvParamHelper.convertToString(searchEngine));
+        searchEngineAsString.add(CvParamHelper.convertToString(searchEngine));
       }
       this.searchEngineAsString = searchEngineAsString;
     }
   }
 
   public void addSearchEngine(CvParamProvider searchEngine) {
-    if (searchEngineAsString == null) {
-      searchEngineAsString = new ArrayList<>();
-    }
     searchEngineAsString.add(CvParamHelper.convertToString(searchEngine));
   }
 
@@ -169,20 +171,15 @@ public class MongoPsm implements PeptideSequenceProvider {
   }
 
   public void addSearchEngineScore(CvParamProvider searchEngineScore) {
-    if (searchEngineScoreAsString == null) {
-      searchEngineScoreAsString = new ArrayList<>();
-    }
     searchEngineScoreAsString.add(CvParamHelper.convertToString(searchEngineScore));
   }
 
   public Iterable<ModificationProvider> getModifications() {
     List<ModificationProvider> modifications = new ArrayList<>();
-    if (modificationsAsString != null) {
       for (String mod : modificationsAsString) {
-        if(!mod.isEmpty()) {
+        if (!mod.isEmpty()) {
           modifications.add(ModificationHelper.convertFromString(mod));
         }
-      }
     }
     return modifications;
   }
@@ -204,15 +201,6 @@ public class MongoPsm implements PeptideSequenceProvider {
   }
 
   public void addModification(ModificationProvider modification) {
-    if (modificationsAsString == null) {
-      modificationsAsString = new ArrayList<>();
-    }
-    if (modificationAccessions == null) {
-      modificationAccessions = new ArrayList<>();
-    }
-    if (modificationNames == null) {
-      modificationNames = new ArrayList<>();
-    }
     modificationsAsString.add(ModificationHelper.convertToString(modification));
     modificationAccessions.add(modification.getAccession());
     modificationNames.add(modification.getName());
@@ -281,5 +269,4 @@ public class MongoPsm implements PeptideSequenceProvider {
   public void setEndPosition(Integer endPosition) {
     this.endPosition = endPosition;
   }
-
 }

@@ -1,6 +1,8 @@
 package uk.ac.ebi.pride.psmindex.mongo.search.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.stereotype.Service;
@@ -8,7 +10,6 @@ import uk.ac.ebi.pride.psmindex.mongo.search.model.MongoPsm;
 import uk.ac.ebi.pride.psmindex.mongo.search.service.repository.MongoPsmRepository;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -44,7 +45,7 @@ public class MongoPsmSearchService {
    * @return a PSM corresponding to the provided ID.
    */
   public MongoPsm findById(String id) {
-    return mongoPsmRepository.findOne(id);
+    return mongoPsmRepository.findById(id).orElse(null);
   }
 
   /**
@@ -73,6 +74,16 @@ public class MongoPsmSearchService {
    */
   public List<MongoPsm> findByProjectAccession(String projectAccession) {
     return mongoPsmRepository.findByProjectAccession(projectAccession);
+  }
+
+  /**
+   * Finds a page of PSMs by a project accession and pageable.
+   * @param projectAccession the project accession to search for
+   * @param pageable the page to request for
+   * @return  a list of PSMs corresponding to the provided project accession
+   */
+  public Page<MongoPsm> findByProjectAccession(String projectAccession, Pageable pageable) {
+    return mongoPsmRepository.findByProjectAccession(projectAccession, pageable);
   }
 
   /**

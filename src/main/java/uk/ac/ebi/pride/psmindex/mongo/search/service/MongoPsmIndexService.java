@@ -4,31 +4,27 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import uk.ac.ebi.pride.psmindex.mongo.search.model.MongoPsm;
 import uk.ac.ebi.pride.psmindex.mongo.search.service.repository.MongoPsmRepository;
 
 import javax.annotation.Resource;
 import java.util.Collection;
 
-/**
- * Indexes PSMs into Mongo.
- */
+/** Indexes PSMs into Mongo. */
 @Service
 public class MongoPsmIndexService {
 
   private static Logger logger = LoggerFactory.getLogger(MongoPsmIndexService.class.getName());
 
-  @Resource
-  private MongoPsmRepository mongoPsmRepository;
+  @Resource private MongoPsmRepository mongoPsmRepository;
 
-  /**
-   * Initializes the service.
-   */
-  public MongoPsmIndexService() {
-  }
+  /** Initializes the service. */
+  public MongoPsmIndexService() {}
 
   /**
    * Sets the Mongo repository.
+   *
    * @param mongoPsmRepository the Mongo PSM repository.
    */
   public void setMongoPsmRepository(MongoPsmRepository mongoPsmRepository) {
@@ -37,6 +33,7 @@ public class MongoPsmIndexService {
 
   /**
    * Saves a PSM to Mongo.
+   *
    * @param psm the PSM to save.
    */
   @Transactional
@@ -46,25 +43,26 @@ public class MongoPsmIndexService {
 
   /**
    * Saves PSMs to Mongo.
+   *
    * @param psms the PSMs to save.
    */
   @Transactional
-  public void save(Iterable<MongoPsm> psms) {
-    if (psms==null || !psms.iterator().hasNext())
-      logger.debug("No PSMs to save");
+  public void save(Collection<MongoPsm> psms) {
+    if (CollectionUtils.isEmpty(psms)) logger.debug("No PSMs to save");
     else {
       if (logger.isDebugEnabled()) {
         debugSavePsm(psms);
       }
-      mongoPsmRepository.save(psms);
+      psms.parallelStream().forEach(mongoPsm -> mongoPsmRepository.save(mongoPsm));
     }
   }
 
   /**
    * Output debug information related to PSMs.
+   *
    * @param psms PSMs to debug
    */
-  private void debugSavePsm(Iterable<MongoPsm> psms) {
+  private void debugSavePsm(Collection<MongoPsm> psms) {
     int i = 0;
     for (MongoPsm psm : psms) {
       logger.debug("Saving PSM " + i + " with ID: " + psm.getId());
@@ -78,29 +76,28 @@ public class MongoPsmIndexService {
 
   /**
    * Deletes a PSM from Mongo.
+   *
    * @param psm the PSM to delete
    */
   @Transactional
-  public void delete(MongoPsm psm){
+  public void delete(MongoPsm psm) {
     mongoPsmRepository.delete(psm);
   }
 
   /**
    * Deletes PSMs from Mongo.
+   *
    * @param psms the PSMs to delete
    */
   @Transactional
-  public void delete(Iterable<MongoPsm> psms){
-    if (psms==null || !psms.iterator().hasNext())
-      logger.info("No PSMs to delete");
+  public void delete(Collection<MongoPsm> psms) {
+    if (CollectionUtils.isEmpty(psms)) logger.info("No PSMs to delete");
     else {
-      mongoPsmRepository.delete(psms);
+      psms.parallelStream().forEach(mongoPsm -> mongoPsmRepository.delete(mongoPsm));
     }
   }
 
-  /**
-   * Deletes all PSMs in Mongo.
-   */
+  /** Deletes all PSMs in Mongo. */
   @Transactional
   public void deleteAll() {
     mongoPsmRepository.deleteAll();
@@ -108,23 +105,15 @@ public class MongoPsmIndexService {
 
   /**
    * Deletes all PSMs in Mongo for a project.
+   *
    * @param projectAccession the project's accession number to delete PSMs
    */
   @Transactional
   public void deleteByProjectAccession(String projectAccession) {
     // todo Possible improvement - retrieve the ids to be deleted instead of the objects
-    mongoPsmRepository.delete(mongoPsmRepository.findByProjectAccession(projectAccession));
+    mongoPsmRepository
+        .findByProjectAccession(projectAccession)
+        .parallelStream()
+        .forEach(mongoPsm -> mongoPsmRepository.delete(mongoPsm));
   }
-
-  /**
-   * Saves PSMs to Mongo.
-   * @param psms the PSMs to save
-   * @return PSMs that were successfully saved.
-   */
-  @Transactional
-  public Iterable<MongoPsm> save(Collection<MongoPsm> psms) {
-    return mongoPsmRepository.save(psms);
-  }
-
 }
-

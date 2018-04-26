@@ -5,8 +5,8 @@ import org.slf4j.Logger;
 import java.io.OutputStream;
 
 /**
- * Outputs the log to a stream.
- * Adapted from: http://www.java2s.com/Open-Source/Java/Testing/jacareto/jacareto/toolkit/log4j/LogOutputStream.java.htm
+ * Outputs the log to a stream. Adapted from:
+ * http://www.java2s.com/Open-Source/Java/Testing/jacareto/jacareto/toolkit/log4j/LogOutputStream.java.htm
  */
 public class ErrorLogOutputStream extends OutputStream {
 
@@ -23,7 +23,7 @@ public class ErrorLogOutputStream extends OutputStream {
    * @param logger the logger where to log the written bytes
    */
   public ErrorLogOutputStream(Logger logger) {
-    setLogger (logger);
+    setLogger(logger);
     mem = "";
   }
 
@@ -32,16 +32,16 @@ public class ErrorLogOutputStream extends OutputStream {
    *
    * @param logger the logger
    */
-  public void setLogger (Logger logger) {
+  public void setLogger(Logger logger) {
     this.logger = logger;
   }
 
   /**
    * Returns the logger.
    *
-   * @return DOCUMENT ME!
+   * @return the logger
    */
-  public Logger getLogger () {
+  public Logger getLogger() {
     return logger;
   }
 
@@ -50,21 +50,18 @@ public class ErrorLogOutputStream extends OutputStream {
    *
    * @param b byte to write
    */
-  public void write (int b) {
+  public void write(int b) {
     byte[] bytes = new byte[1];
     bytes[0] = (byte) (b & 0xff);
     mem = mem + new String(bytes);
-    if (mem.endsWith ("\n")) {
-      mem = mem.substring (0, mem.length () - 1);
+    if (mem.endsWith("\n")) {
+      mem = mem.substring(0, mem.length() - 1);
     }
   }
 
-  /**
-   * Flushes the output stream.
-   */
-  public void flush () {
+  /** Flushes the output stream. */
+  public void flush() {
     logger.error(mem);
     mem = "";
   }
-
 }

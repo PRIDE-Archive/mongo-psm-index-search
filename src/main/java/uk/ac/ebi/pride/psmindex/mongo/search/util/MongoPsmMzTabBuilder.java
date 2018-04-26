@@ -3,13 +3,12 @@ package uk.ac.ebi.pride.psmindex.mongo.search.util;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.CollectionUtils;
 import uk.ac.ebi.pride.archive.utils.spectrum.SpectrumIDGenerator;
-import uk.ac.ebi.pride.archive.utils.spectrum.SpectrumIdGeneratorPride3;
+import uk.ac.ebi.pride.archive.utils.spectrum.SpectrumIdGeneratorPrideArchive;
 import uk.ac.ebi.pride.jmztab.model.*;
-import uk.ac.ebi.pride.jmztab.utils.errors.MZTabException;
 import uk.ac.ebi.pride.psmindex.mongo.search.model.MongoPsm;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,48 +22,61 @@ public class MongoPsmMzTabBuilder {
   private static Logger logger = LoggerFactory.getLogger(MongoPsmMzTabBuilder.class.getName());
 
   /**
-   * The map between the assay accession and the file need to be provided externally from the database
+   * The map between the assay accession and the file need to be provided externally from the
+   * database
    *
    * @return A map of assay accessions to PSMs
-   * @throws java.io.IOException problems reading from the mzTab file
    */
-  public static List<MongoPsm> readPsmsFromMzTabFile(String projectAccession, String assayAccession, MZTabFile mzTabFile) throws IOException, MZTabException {
+  public static List<MongoPsm> readPsmsFromMzTabFile(
+      String projectAccession, String assayAccession, MZTabFile mzTabFile) {
     List<MongoPsm> result = new LinkedList<>();
     if (mzTabFile != null) {
-      result = convertFromMzTabPsmsToPrideArchivePsms(mzTabFile.getPSMs(), mzTabFile.getMetadata(), projectAccession, assayAccession);
-      logger.debug("Found " + result.size() + " psms for Assay " + assayAccession + " in file " + mzTabFile);
+      result =
+          convertFromMzTabPsmsToPrideArchivePsms(
+              mzTabFile.getPSMs(), mzTabFile.getMetadata(), projectAccession, assayAccession);
+      logger.debug(
+          "Found " + result.size() + " psms for Assay " + assayAccession + " in file " + mzTabFile);
     }
     return result;
   }
 
   /**
    * Converts from mzTab-PSMs to Archive-compatible PSMs.
+   *
    * @param mzTabPsms maTab PSMs
    * @param metadata PSM metadata
    * @param projectAccession the Archive project accession number
    * @param assayAccession the Archive assay accession number
-   * @return list of  Archive-compatible PSMs.
+   * @return list of Archive-compatible PSMs.
    */
-  private static LinkedList<MongoPsm> convertFromMzTabPsmsToPrideArchivePsms(Collection<PSM> mzTabPsms, Metadata metadata, String projectAccession, String assayAccession) {
-    LinkedList<MongoPsm> res = new LinkedList<MongoPsm>();
+  private static LinkedList<MongoPsm> convertFromMzTabPsmsToPrideArchivePsms(
+      Collection<PSM> mzTabPsms,
+      Metadata metadata,
+      String projectAccession,
+      String assayAccession) {
+    LinkedList<MongoPsm> result = new LinkedList<>();
     for (PSM mzTabPsm : mzTabPsms) {
-      String cleanPepSequence = MongoPsmSequenceCleaner.cleanPeptideSequence(mzTabPsm.getSequence());
+      String cleanPepSequence =
+          MongoPsmSequenceCleaner.cleanPeptideSequence(mzTabPsm.getSequence());
       MongoPsm newPsm = new MongoPsm();
-      newPsm.setId(getId(projectAccession, assayAccession, mzTabPsm.getPSM_ID(), mzTabPsm.getAccession(), cleanPepSequence));
+      newPsm.setId(
+          getId(
+              projectAccession,
+              assayAccession,
+              mzTabPsm.getPSM_ID(),
+              mzTabPsm.getAccession(),
+              cleanPepSequence));
       newPsm.setReportedId(mzTabPsm.getPSM_ID());
       newPsm.setSpectrumId(createSpectrumId(mzTabPsm, projectAccession));
       newPsm.setPeptideSequence(cleanPepSequence);
       newPsm.setProjectAccession(projectAccession);
       newPsm.setAssayAccession(assayAccession);
       // To be compatible with the project index we don't clean the protein accession
-      // String correctedAccession = getCorrectedAccession(mzTabPsm.getAccession(), mzTabPsm.getDatabase());
-      // newPsm.setProteinAccession(correctedAccession);
       newPsm.setProteinAccession(mzTabPsm.getAccession());
       newPsm.setDatabase(mzTabPsm.getDatabase());
       newPsm.setDatabaseVersion(mzTabPsm.getDatabaseVersion());
       newPsm.setModifications(new LinkedList<>());
       if (mzTabPsm.getModifications() != null) {
-        //Using the writer for the library
         for (Modification mod : mzTabPsm.getModifications()) {
           newPsm.addModification(convertToModificationProvider(mod));
         }
@@ -76,28 +88,30 @@ public class MongoPsmMzTabBuilder {
         newPsm.setUnique(null);
       }
       newPsm.setSearchEngines(new LinkedList<>());
-      //If the mzTab search engine can not be converted SplitList can be null
+      // If the mzTab search engine can not be converted SplitList can be null
       if (mzTabPsm.getSearchEngine() != null && !mzTabPsm.getSearchEngine().isEmpty()) {
         for (Param searchEngine : mzTabPsm.getSearchEngine()) {
           newPsm.addSearchEngine(convertToCvParamProvider(searchEngine));
         }
       }
       newPsm.setSearchEngineScores(new LinkedList<>());
-      //If the mzTab search engine can not be converted SplitList can be null
-      if (metadata.getPsmSearchEngineScoreMap() != null && !metadata.getPsmSearchEngineScoreMap().isEmpty()) {
-        for (PSMSearchEngineScore psmSearchEngineScore : metadata.getPsmSearchEngineScoreMap().values()) {
+      if (metadata.getPsmSearchEngineScoreMap() != null
+          && !metadata.getPsmSearchEngineScoreMap().isEmpty()) {
+        for (PSMSearchEngineScore psmSearchEngineScore :
+            metadata.getPsmSearchEngineScoreMap().values()) {
           if (mzTabPsm.getSearchEngineScore(psmSearchEngineScore.getId()) != null) {
-            // We create a Param as the composition between the searchEngineScore stored in the metadata and
-            // the search engine score value stored in the psm
+            /* We create a Param as the composition between the searchEngineScore stored in the metadata
+            and the search engine score value stored in the psm */
             Param param = psmSearchEngineScore.getParam();
             String value = mzTabPsm.getSearchEngineScore(psmSearchEngineScore.getId()).toString();
-            newPsm.addSearchEngineScore(convertToCvParamProvider(param.getCvLabel(), param.getAccession(), param.getName(), value));
-
+            newPsm.addSearchEngineScore(
+                convertToCvParamProvider(
+                    param.getCvLabel(), param.getAccession(), param.getName(), value));
           }
         }
       }
       SplitList<Double> retentionTimes = mzTabPsm.getRetentionTime();
-      if (retentionTimes != null && !retentionTimes.isEmpty()) {
+      if (!CollectionUtils.isEmpty(retentionTimes)) {
         newPsm.setRetentionTime(retentionTimes.get(0));
       }
       newPsm.setCharge(mzTabPsm.getCharge());
@@ -111,16 +125,15 @@ public class MongoPsmMzTabBuilder {
       if (mzTabPsm.getEnd() != null) {
         newPsm.setEndPosition(mzTabPsm.getEnd());
       }
-      res.add(newPsm);
+      result.add(newPsm);
     }
-
-    return res;
+    return result;
   }
 
   /**
    * Creates a spectrum Id compatible with PRIDE Archive
    *
-   * @param psm              original mzTab psm
+   * @param psm original mzTab psm
    * @param projectAccession PRIDE Archive accession
    * @return the spectrum Id or "unknown_id" if the conversion fails
    */
@@ -130,31 +143,25 @@ public class MongoPsmMzTabBuilder {
     String spectrumId = "unknown_id";
     SpectraRef spectrum;
     SplitList<SpectraRef> spectra = psm.getSpectraRef();
-    if (spectra != null && !spectra.isEmpty()) {
-      // NOTE: If the psm was discovered as a combination of several spectra, we will
+    if (!CollectionUtils.isEmpty(spectra)) {
+      // If the psm was discovered as a combination of several spectra, we will
       // simplify the case choosing only the first spectrum
-      if (spectra.size() != 1) {
-        logger.debug("Found " + spectra.size() + " spectra for PSM " +
-            psm.getPSM_ID() + " only the first one will be use for generating the spectrum id");
+      if (logger.isDebugEnabled()) {
+        logger.debug("Found " + spectra.size() + " spectra for PSM " + psm.getPSM_ID());
       }
       spectrum = spectra.get(0);
       if (spectrum != null) {
         msRunFileName = extractFileName(spectrum.getMsRun().getLocation().getFile());
         identifierInMsRunFile = spectrum.getReference();
-        if (msRunFileName != null && !msRunFileName.isEmpty() && identifierInMsRunFile != null && !identifierInMsRunFile.isEmpty()) {
-          SpectrumIDGenerator spectrumIDGenerator = new SpectrumIdGeneratorPride3();
-          spectrumId = spectrumIDGenerator.generate(projectAccession, msRunFileName, identifierInMsRunFile);
-        } else {
-          logger.warn("The spectrum id for PSM " + psm.getPSM_ID() +
-              " can not be generated because the file location is not valid");
+        if (msRunFileName != null
+            && !msRunFileName.isEmpty()
+            && identifierInMsRunFile != null
+            && !identifierInMsRunFile.isEmpty()) {
+          SpectrumIDGenerator spectrumIDGenerator = new SpectrumIdGeneratorPrideArchive();
+          spectrumId =
+              spectrumIDGenerator.generate(projectAccession, msRunFileName, identifierInMsRunFile);
         }
-      } else {
-        logger.warn("The spectrum id for PSM " + psm.getPSM_ID() +
-            " can not be generated because the spectrum is null");
       }
-    } else {
-      logger.warn("The spectrum id for PSM " + psm.getPSM_ID() +
-          " can not be generated because the spectraRef is null or empty");
     }
     return spectrumId;
   }

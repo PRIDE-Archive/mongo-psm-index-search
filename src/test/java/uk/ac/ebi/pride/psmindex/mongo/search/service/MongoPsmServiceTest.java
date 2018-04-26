@@ -1,29 +1,31 @@
 package uk.ac.ebi.pride.psmindex.mongo.search.service;
 
-
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.querydsl.QSort;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.ac.ebi.pride.archive.dataprovider.identification.ModificationProvider;
 import uk.ac.ebi.pride.indexutils.modifications.Modification;
+import uk.ac.ebi.pride.psmindex.mongo.search.config.MongoTestConfiguration;
 import uk.ac.ebi.pride.psmindex.mongo.search.model.MongoPsm;
+import uk.ac.ebi.pride.psmindex.mongo.search.service.repository.MongoPsmRepository;
 
 import javax.annotation.Resource;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-/**
- * Tests the PSM service.
- */
+/** Tests the PSM service. */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "classpath:spring-mongo-test-context.xml")
+@ContextConfiguration(classes = {MongoTestConfiguration.class})
 public class MongoPsmServiceTest {
 
   // PSM 1 test data
@@ -38,18 +40,16 @@ public class MongoPsmServiceTest {
   private static final String PSM_2_SEQUENCE = "YSQPEDSLIPFFEITVPESQLTVSQFTLPK";
   private static final String PSM_2_SPECTRUM = "SPECTRUM-ID1";
 
-
   // PSM 3 test data
   private static final String PSM_3_ID = "TEST-PSM-ID3";
   private static final String PSM_3_REPORTED_ID = "TEST-PSM-REPORTED-ID3";
   private static final String PSM_3_SEQUENCE = "YSQPEDSLIPFFEITVPE";
   private static final String PSM_3_SPECTRUM = "SPECTRUM-ID3";
 
-
   private static final int NUM_TEST_PSMS = 3;
   private static final String PSM_ID_PREFIX = "TEST-PSM-ID";
 
-  //Proteins
+  // Proteins
   private static final String PROTEIN_1_ACCESSION = "PROTEIN-1-ACCESSION";
   private static final String PROTEIN_2_ACCESSION = "PROTEIN-2-ACCESSION";
 
@@ -57,13 +57,13 @@ public class MongoPsmServiceTest {
   private static final String PARTIAL_ACCESSION_WILDCARD_END_1 = "*1-ACCESSION";
   private static final String PARTIAL_ACCESSION_WILDCARD_END_2 = "*2-ACCESSION";
 
-  //Projects and assays
+  // Projects and assays
   private static final String PROJECT_1_ACCESSION = "PROJECT-1-ACCESSION";
   private static final String PROJECT_2_ACCESSION = "PROJECT-2-ACCESSION";
   private static final String ASSAY_1_ACCESSION = "ASSAY-1-ACCESSION";
   private static final String ASSAY_2_ACCESSION = "ASSAY-2-ACCESSION";
 
-  //Modifications
+  // Modifications
   private static final Integer MOD_1_POS = 3;
   private static final Integer MOD_2_POS = 5;
   private static final String MOD_1_ACCESSION = "MOD:00696";
@@ -75,87 +75,108 @@ public class MongoPsmServiceTest {
   private static final String MOD_1_SYNONYM = "phosphorylation";
   private static final String MOD_2_SYNONYM = "amidation";
 
-  //Neutral Loss without mod
+  // Neutral Loss without mod
   private static final String NEUTRAL_LOSS_ACC = "MS:1001524";
   private static final String NEUTRAL_LOSS_NAME = "fragment neutral loss";
   private static final String NEUTRAL_LOSS_VAL = "63.998283";
   private static final String NEUTRAL_LOSS_POS = "7";
 
-  //Neutral Loss with mod
+  // Neutral Loss with mod
   private static final String NEUTRAL_LOSS_MOD_POS = "3";
 
-  //Sequences
+  // Sequences
   private static final String SEQUENCE_SUB = "IPFFEITVPE";
   private static final String SEQUENCE_LT_6 = "ITVPE";
   private static final String SEQUENCE_BT_100 =
-      "MKLNPQQAPLYGDCVVTVLLAEEDKAEDDVVFYLVFLGSTLRHCTSTRKVSSDTLETIAP" +
-          "GHDCCETVKVQLCASKEGLPVFVVAEEDFHFVQDEAYDAAQFLATSAGNQQALNFTRFLD";
+      "MKLNPQQAPLYGDCVVTVLLAEEDKAEDDVVFYLVFLGSTLRHCTSTRKVSSDTLETIAP"
+          + "GHDCCETVKVQLCASKEGLPVFVVAEEDFHFVQDEAYDAAQFLATSAGNQQALNFTRFLD";
+
+  private List<MongoPsm> mongoPsms = new ArrayList<>();
 
   public static final long ZERO_DOCS = 0L;
   public static final long SINGLE_DOC = 1L;
 
-  @Resource
-  private MongoPsmIndexService mongoPsmIndexService;
+  @Resource private MongoPsmIndexService mongoPsmIndexService;
 
-  @Resource
-  private MongoPsmSearchService mongoPsmSearchService;
+  @Resource private MongoPsmSearchService mongoPsmSearchService;
 
-  /**
-   * Ensures all existing data are deleted, and inserts test data.
-   */
+  @Autowired
+  private MongoPsmRepository mongoPsmRepository;
+
+  /** Ensures all existing data are deleted, and inserts test data. */
   @Before
   public void setUp() {
+    mongoPsmIndexService.setMongoPsmRepository(mongoPsmRepository);
+    mongoPsmSearchService.setMongoPsmRepository(mongoPsmRepository);
     mongoPsmIndexService.deleteAll();
     insertTestData();
   }
 
-  /**
-   * Deletes test data
-   */
+  /** Deletes test data */
   @After
   public void tearDown() {
+    mongoPsmIndexService.deleteByProjectAccession(PROJECT_1_ACCESSION);
+    mongoPsmIndexService.delete(mongoPsms.get(0));
+    mongoPsmIndexService.delete(mongoPsms);
     mongoPsmIndexService.deleteAll();
   }
 
-  /**
-   * Inserts test data.
-   */
+  /** Inserts test data. */
   private void insertTestData() {
-    addPsm(PSM_1_ID, PSM_1_REPORTED_ID, PSM_1_SEQUENCE, PSM_1_SPECTRUM, PROTEIN_1_ACCESSION, PROJECT_1_ACCESSION, ASSAY_1_ACCESSION);
-    addPsm(PSM_2_ID, PSM_2_REPORTED_ID, PSM_2_SEQUENCE, PSM_2_SPECTRUM, PROTEIN_2_ACCESSION, PROJECT_2_ACCESSION, ASSAY_2_ACCESSION);
-    addPsm(PSM_3_ID, PSM_3_REPORTED_ID, PSM_3_SEQUENCE, PSM_3_SPECTRUM, PROTEIN_2_ACCESSION, PROJECT_2_ACCESSION, ASSAY_2_ACCESSION);
+    addPsm(
+        PSM_1_ID,
+        PSM_1_REPORTED_ID,
+        PSM_1_SEQUENCE,
+        PSM_1_SPECTRUM,
+        PROTEIN_1_ACCESSION,
+        PROJECT_1_ACCESSION,
+        ASSAY_1_ACCESSION);
+    addPsm(
+        PSM_2_ID,
+        PSM_2_REPORTED_ID,
+        PSM_2_SEQUENCE,
+        PSM_2_SPECTRUM,
+        PROTEIN_2_ACCESSION,
+        PROJECT_2_ACCESSION,
+        ASSAY_2_ACCESSION);
+    addPsm(
+        PSM_3_ID,
+        PSM_3_REPORTED_ID,
+        PSM_3_SEQUENCE,
+        PSM_3_SPECTRUM,
+        PROTEIN_2_ACCESSION,
+        PROJECT_2_ACCESSION,
+        ASSAY_2_ACCESSION);
   }
 
-  /**
-   * Tests searching by ID.
-   */
+  /** Tests searching by ID. */
   @Test
   public void testSearchById() {
-    MongoPsm psm1= mongoPsmSearchService.findById(PSM_1_ID);
-    assertNotNull(psm1);
-    assertEquals(PSM_1_ID, psm1.getId());
+    MongoPsm psm1 = mongoPsmSearchService.findById(PSM_1_ID);
+    Assert.assertNotNull(psm1);
+    Assert.assertEquals(PSM_1_ID, psm1.getId());
     MongoPsm psm2 = mongoPsmSearchService.findById(PSM_2_ID);
-    assertNotNull(psm2);
-    assertEquals(PSM_2_ID, psm2.getId());
+    Assert.assertNotNull(psm2);
+    Assert.assertEquals(PSM_2_ID, psm2.getId());
     MongoPsm psm3 = mongoPsmSearchService.findById(PSM_3_ID);
-    assertNotNull(psm3);
-    assertEquals(PSM_3_ID, psm3.getId());
+    Assert.assertNotNull(psm3);
+    Assert.assertEquals(PSM_3_ID, psm3.getId());
+    Assert.assertEquals(3, mongoPsmSearchService.findByIdIn(mongoPsms.stream().map(MongoPsm::getId).collect(Collectors.toList())).size());
+    Assert.assertEquals(3, mongoPsmSearchService.findByIdIn(mongoPsms.stream().map(MongoPsm::getId).collect(Collectors.toList()), new QSort()).size());
   }
 
-  /**
-   * Tests counting by project accession.
-   */
+  /** Tests counting by project accession. */
   @Test
   public void testCountByProjectAccession() {
     long totalFound = mongoPsmSearchService.countByProjectAccession(PROJECT_1_ACCESSION);
-    assertEquals(1, totalFound);
+    Assert.assertEquals(1, totalFound);
     totalFound = mongoPsmSearchService.countByProjectAccession(PROJECT_2_ACCESSION);
-    assertEquals(2, totalFound);
+    Assert.assertEquals(2, totalFound);
   }
-
 
   /**
    * Adds a PSM
+   *
    * @param psmId the PSM ID
    * @param psmReportedId the PSM reported ID
    * @param psmSequence the PSM sequence
@@ -164,8 +185,14 @@ public class MongoPsmServiceTest {
    * @param projectAccession the project accession
    * @param assayAccession the assay accession
    */
-  private void addPsm(String psmId, String psmReportedId, String psmSequence, String psmSpectrum, String proteinAcccession, String projectAccession,
-                      String assayAccession) {
+  private void addPsm(
+      String psmId,
+      String psmReportedId,
+      String psmSequence,
+      String psmSpectrum,
+      String proteinAcccession,
+      String projectAccession,
+      String assayAccession) {
     MongoPsm psm = new MongoPsm();
     psm.setId(psmId);
     psm.setReportedId(psmReportedId);
@@ -187,5 +214,6 @@ public class MongoPsmServiceTest {
     modifications.add(mod2);
     psm.setModifications(modifications);
     mongoPsmIndexService.save(psm);
+    mongoPsms.add(psm);
   }
 }
