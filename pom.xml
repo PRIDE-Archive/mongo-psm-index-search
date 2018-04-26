@@ -4,9 +4,9 @@
 
     <groupId>uk.ac.ebi.pride</groupId>
     <artifactId>mongo-psm-index-search</artifactId>
-    <packaging>jar</packaging>
     <version>1.0.3-springboot-SNAPSHOT</version>
     <name>mongo-psm-index-search</name>
+    <packaging>jar</packaging>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
