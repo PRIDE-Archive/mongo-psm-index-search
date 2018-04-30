@@ -93,7 +93,7 @@ public class MongoPsmIndexService {
   public void delete(Collection<MongoPsm> psms) {
     if (CollectionUtils.isEmpty(psms)) logger.info("No PSMs to delete");
     else {
-	  mongoPsmRepository.deleteAll(psms);
+      mongoPsmRepository.deleteAll(psms);
     }
   }
 
@@ -110,10 +110,6 @@ public class MongoPsmIndexService {
    */
   @Transactional
   public void deleteByProjectAccession(String projectAccession) {
-    // todo Possible improvement - retrieve the ids to be deleted instead of the objects
-    mongoPsmRepository
-        .findByProjectAccession(projectAccession)
-        .parallelStream()
-        .forEach(mongoPsm -> mongoPsmRepository.delete(mongoPsm));
+    mongoPsmRepository.deleteAll(mongoPsmRepository.findByProjectAccession(projectAccession));
   }
 }
