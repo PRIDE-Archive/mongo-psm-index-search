@@ -3,7 +3,6 @@ package uk.ac.ebi.pride.psmindex.mongo.search.indexer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.util.CollectionUtils;
 import uk.ac.ebi.pride.jmztab.model.MZTabFile;
 import uk.ac.ebi.pride.psmindex.mongo.search.model.MongoPsm;
 import uk.ac.ebi.pride.psmindex.mongo.search.service.MongoPsmIndexService;
@@ -19,6 +18,7 @@ import java.util.List;
 /** Indexes a project's PSMs in Mongo. */
 public class MongoProjectPsmIndexer {
 
+  private static final int MAX_PAGE_SIZE = 1000;
   private static Logger logger = LoggerFactory.getLogger(MongoProjectPsmIndexer.class.getName());
 
   @Resource private MongoPsmIndexService mongoPsmIndexService;
@@ -73,35 +73,43 @@ public class MongoProjectPsmIndexer {
   }
 
   /**
-   * Deletes all PSMs for a project.
+   * Deletes all PSMs for a project by project accession.
    *
    * @param projectAccession the project's accession number to delete PSMs
    */
   public void deleteAllPsmsForProject(String projectAccession) {
+    long psmCount = mongoPsmSearchService.countByProjectAccession(projectAccession);
     List<MongoPsm> initialPsmsFound;
-    do {
-      initialPsmsFound =
-          mongoPsmSearchService
-              .findByProjectAccession(projectAccession, PageRequest.of(0, 1000))
-              .getContent();
-      mongoPsmIndexService.delete(initialPsmsFound);
-    } while (!CollectionUtils.isEmpty(initialPsmsFound));
+    while (0 < psmCount) {
+      for (int i = 0; i < (psmCount / MAX_PAGE_SIZE) + 1; i++) {
+        initialPsmsFound =
+            mongoPsmSearchService
+                .findByProjectAccession(projectAccession, PageRequest.of(i, MAX_PAGE_SIZE))
+                .getContent();
+        mongoPsmIndexService.delete(initialPsmsFound);
+      }
+      psmCount = mongoPsmSearchService.countByProjectAccession(projectAccession);
+    }
   }
 
   /**
-   * Deletes all PSMs for a project.
+   * Deletes all PSMs for a project by assay accession.
    *
    * @param assayAccession the assay number to delete PSMs
    */
   public void deleteAllPsmsForAssay(String assayAccession) {
+    long psmCount = mongoPsmSearchService.countByAssayAccession(assayAccession);
     List<MongoPsm> initialPsmsFound;
-    do {
-      initialPsmsFound =
-          mongoPsmSearchService
-              .findByAssayAccession(assayAccession, PageRequest.of(0, 1000))
-              .getContent();
-      mongoPsmIndexService.delete(initialPsmsFound);
-    } while (!CollectionUtils.isEmpty(initialPsmsFound));
+    while (0 < psmCount) {
+      for (int i = 0; i < (psmCount / MAX_PAGE_SIZE) + 1; i++) {
+        initialPsmsFound =
+            mongoPsmSearchService
+                .findByAssayAccession(assayAccession, PageRequest.of(i, MAX_PAGE_SIZE))
+                .getContent();
+        mongoPsmIndexService.delete(initialPsmsFound);
+      }
+      psmCount = mongoPsmSearchService.countByAssayAccession(assayAccession);
+    }
   }
 
   /**

@@ -93,7 +93,7 @@ public class MongoPsmIndexService {
   public void delete(Collection<MongoPsm> psms) {
     if (CollectionUtils.isEmpty(psms)) logger.info("No PSMs to delete");
     else {
-      psms.parallelStream().forEach(mongoPsm -> mongoPsmRepository.delete(mongoPsm));
+	  mongoPsmRepository.deleteAll(psms);
     }
   }
 
