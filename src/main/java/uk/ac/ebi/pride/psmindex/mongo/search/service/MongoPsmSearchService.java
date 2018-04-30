@@ -93,7 +93,7 @@ public class MongoPsmSearchService {
    * @return a list of PSMs corresponding to the provided project accession
    */
   public Page<MongoPsm> findByAssayAccession(String assayAccession, Pageable pageable) {
-    return mongoPsmRepository.findByProjectAccession(assayAccession, pageable);
+    return mongoPsmRepository.findByAssayAccession(assayAccession, pageable);
   }
 
   /**
