@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.psmindex.mongo.search.indexer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.util.CollectionUtils;
 import uk.ac.ebi.pride.jmztab.model.MZTabFile;
 import uk.ac.ebi.pride.psmindex.mongo.search.model.MongoPsm;
 import uk.ac.ebi.pride.psmindex.mongo.search.service.MongoPsmIndexService;
@@ -77,13 +78,30 @@ public class MongoProjectPsmIndexer {
    * @param projectAccession the project's accession number to delete PSMs
    */
   public void deleteAllPsmsForProject(String projectAccession) {
-    while (0
-        < new Long(mongoPsmSearchService.countByProjectAccession(projectAccession)).intValue()) {
-      mongoPsmIndexService.delete(
+    List<MongoPsm> initialPsmsFound;
+    do {
+      initialPsmsFound =
           mongoPsmSearchService
               .findByProjectAccession(projectAccession, PageRequest.of(0, 1000))
-              .getContent());
-    }
+              .getContent();
+      mongoPsmIndexService.delete(initialPsmsFound);
+    } while (!CollectionUtils.isEmpty(initialPsmsFound));
+  }
+
+  /**
+   * Deletes all PSMs for a project.
+   *
+   * @param assayAccession the assay number to delete PSMs
+   */
+  public void deleteAllPsmsForAssay(String assayAccession) {
+    List<MongoPsm> initialPsmsFound;
+    do {
+      initialPsmsFound =
+          mongoPsmSearchService
+              .findByAssayAccession(assayAccession, PageRequest.of(0, 1000))
+              .getContent();
+      mongoPsmIndexService.delete(initialPsmsFound);
+    } while (!CollectionUtils.isEmpty(initialPsmsFound));
   }
 
   /**
@@ -96,21 +114,21 @@ public class MongoProjectPsmIndexer {
   }
 
   /**
-   * Gets mongoPsmIndexService.
-   *
-   * @return Value of mongoPsmIndexService.
-   */
-  public MongoPsmIndexService getMongoPsmIndexService() {
-    return mongoPsmIndexService;
-  }
-
-  /**
    * Sets new mongoPsmSearchService.
    *
    * @param mongoPsmSearchService New value of mongoPsmSearchService.
    */
   public void setMongoPsmSearchService(MongoPsmSearchService mongoPsmSearchService) {
     this.mongoPsmSearchService = mongoPsmSearchService;
+  }
+
+  /**
+   * Gets mongoPsmIndexService.
+   *
+   * @return Value of mongoPsmIndexService.
+   */
+  public MongoPsmIndexService getMongoPsmIndexService() {
+    return mongoPsmIndexService;
   }
 
   /**

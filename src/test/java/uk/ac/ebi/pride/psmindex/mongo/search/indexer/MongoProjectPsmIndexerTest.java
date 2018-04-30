@@ -106,6 +106,9 @@ public class MongoProjectPsmIndexerTest {
         PROJECT_1_ACCESSION, PROJECT_1_ASSAY_1, mzTabFileP1A1);
     mongoProjectPsmIndexer.indexAllPsmsForProjectAndAssay(
         PROJECT_1_ACCESSION, PROJECT_1_ASSAY_2, mzTabFileP1A2);
+    mongoProjectPsmIndexer.deleteAllPsmsForAssay(PROJECT_1_ASSAY_2);
+    mongoProjectPsmIndexer.indexAllPsmsForProjectAndAssay(
+        PROJECT_1_ACCESSION, PROJECT_1_ASSAY_2, mzTabFileP1A2);
     mongoProjectPsmIndexer.indexAllPsmsForProjectAndAssay(
         PROJECT_2_ACCESSION, PROJECT_2_ASSAY_1, mzTabFileP2A1);
   }
@@ -126,6 +129,7 @@ public class MongoProjectPsmIndexerTest {
     Assert.assertEquals(NUM_PSMS_PROJECT_1, psms.size());
     psms = mongoPsmSearchService.findByProjectAccession(PROJECT_2_ACCESSION);
     Assert.assertEquals(NUM_PSMS_PROJECT_2, psms.size());
+    Assert.assertEquals(NUM_PSMS_PROJECT_2, (int) mongoPsmSearchService.countByAssayAccession(PROJECT_2_ASSAY_1));
   }
 
   /** Adds PSMs with neutral loss. */

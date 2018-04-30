@@ -9,7 +9,6 @@ import uk.ac.ebi.pride.psmindex.mongo.search.model.MongoPsm;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 /** The Mongo PSM respository. */
 @Repository
@@ -58,4 +57,12 @@ public interface MongoPsmRepository extends MongoRepository<MongoPsm, String> {
    * @return the number of PSMs corresponding to the provided project accession
    */
   long countByProjectAccession(String projectAccession);
+
+  /**
+   * Counts how many PSMs are for an assay accession
+   *
+   * @param assayAccession the assay accession
+   * @return the number of PSMs corresponding to the provided project accession
+   */
+  long countByAssayAccession(String assayAccession);
 }
