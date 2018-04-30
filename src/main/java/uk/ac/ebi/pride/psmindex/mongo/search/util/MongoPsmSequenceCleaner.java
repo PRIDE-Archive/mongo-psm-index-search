@@ -9,9 +9,8 @@ import org.slf4j.LoggerFactory;
  * characters.
  */
 public class MongoPsmSequenceCleaner {
-  private static Logger logger = LoggerFactory.getLogger(MongoPsmSequenceCleaner.class.getName());
-
   public static final String NO_PEPTIDE_REGEX = "[^ABCDEFGHIJKLMNPQRSTUVWXYZ]";
+  private static Logger logger = LoggerFactory.getLogger(MongoPsmSequenceCleaner.class.getName());
 
   /**
    * This class cleans a PSM Sequence by converting it to uppercase, and removing any unknown

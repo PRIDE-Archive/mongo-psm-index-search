@@ -3,7 +3,6 @@ package uk.ac.ebi.pride.psmindex.mongo.search.util;
 import org.junit.Assert;
 import org.junit.Test;
 
-
 /** Tests building PSM IDs. */
 public class MongoPsmIdBuilderTest {
 
@@ -28,7 +27,8 @@ public class MongoPsmIdBuilderTest {
   @Test
   public void testGetId() {
     String newID =
-        MongoPsmIdBuilder.getId(PROJECT_ACCESSION, ASSAY_ACCESSION, REPORTED_ID, PROTEIN_ACCESSION, PEP_SEQUENCE);
+        MongoPsmIdBuilder.getId(
+            PROJECT_ACCESSION, ASSAY_ACCESSION, REPORTED_ID, PROTEIN_ACCESSION, PEP_SEQUENCE);
     Assert.assertEquals(ID, newID);
   }
 

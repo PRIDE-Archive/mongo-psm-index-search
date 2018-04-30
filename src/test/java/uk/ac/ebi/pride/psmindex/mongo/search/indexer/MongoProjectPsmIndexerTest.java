@@ -31,9 +31,6 @@ import java.util.List;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {MongoTestConfiguration.class})
 public class MongoProjectPsmIndexerTest {
-  private static Logger logger = LoggerFactory.getLogger(MongoProjectPsmIndexerTest.class);
-  private static ErrorLogOutputStream errorLogOutputStream = new ErrorLogOutputStream(logger);
-
   private static final String PROJECT_1_ACCESSION = "PXD000581";
   private static final String PROJECT_2_ACCESSION = "TST000121";
   private static final String PROJECT_1_ASSAY_1 = "32411";
@@ -58,7 +55,8 @@ public class MongoProjectPsmIndexerTest {
   private static final String NEUTRAL_LOSS_NAME = "fragment neutral loss";
   private static final String NEUTRAL_LOSS_VAL = "63.998283";
   private static final Integer NEUTRAL_LOSS_POS = 7;
-
+  private static Logger logger = LoggerFactory.getLogger(MongoProjectPsmIndexerTest.class);
+  private static ErrorLogOutputStream errorLogOutputStream = new ErrorLogOutputStream(logger);
   private MongoProjectPsmIndexer mongoProjectPsmIndexer;
   @Resource private MongoPsmIndexService mongoPsmIndexService;
   @Resource private MongoPsmSearchService mongoPsmSearchService;
@@ -72,8 +70,10 @@ public class MongoProjectPsmIndexerTest {
   public void setup() throws Exception {
     mongoProjectPsmIndexer =
         new MongoProjectPsmIndexer(mongoPsmIndexService, mongoPsmSearchService);
-	mongoProjectPsmIndexer.setMongoPsmIndexService(mongoProjectPsmIndexer.getMongoPsmIndexService());
-	mongoProjectPsmIndexer.setMongoPsmSearchService(mongoProjectPsmIndexer.getMongoPsmSearchService());
+    mongoProjectPsmIndexer.setMongoPsmIndexService(
+        mongoProjectPsmIndexer.getMongoPsmIndexService());
+    mongoProjectPsmIndexer.setMongoPsmSearchService(
+        mongoProjectPsmIndexer.getMongoPsmSearchService());
     mongoPsmIndexService.deleteAll();
     insertTestData();
   }
@@ -129,7 +129,8 @@ public class MongoProjectPsmIndexerTest {
     Assert.assertEquals(NUM_PSMS_PROJECT_1, psms.size());
     psms = mongoPsmSearchService.findByProjectAccession(PROJECT_2_ACCESSION);
     Assert.assertEquals(NUM_PSMS_PROJECT_2, psms.size());
-    Assert.assertEquals(NUM_PSMS_PROJECT_2, (int) mongoPsmSearchService.countByAssayAccession(PROJECT_2_ASSAY_1));
+    Assert.assertEquals(
+        NUM_PSMS_PROJECT_2, (int) mongoPsmSearchService.countByAssayAccession(PROJECT_2_ASSAY_1));
   }
 
   /** Adds PSMs with neutral loss. */
@@ -162,7 +163,7 @@ public class MongoProjectPsmIndexerTest {
     psm.setModifications(modifications);
     mongoPsmIndexService.save(psm);
     List<MongoPsm> mongoPsms = new ArrayList<>();
-	mongoPsms.add(psm);
+    mongoPsms.add(psm);
     mongoPsmIndexService.save(mongoPsms);
   }
 }

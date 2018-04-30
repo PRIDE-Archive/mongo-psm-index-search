@@ -176,10 +176,10 @@ public class MongoPsm implements PeptideSequenceProvider {
 
   public Iterable<ModificationProvider> getModifications() {
     List<ModificationProvider> modifications = new ArrayList<>();
-      for (String mod : modificationsAsString) {
-        if (!mod.isEmpty()) {
-          modifications.add(ModificationHelper.convertFromString(mod));
-        }
+    for (String mod : modificationsAsString) {
+      if (!mod.isEmpty()) {
+        modifications.add(ModificationHelper.convertFromString(mod));
+      }
     }
     return modifications;
   }

@@ -28,21 +28,21 @@ public class ErrorLogOutputStream extends OutputStream {
   }
 
   /**
-   * Sets the logger where to log the bytes.
-   *
-   * @param logger the logger
-   */
-  public void setLogger(Logger logger) {
-    this.logger = logger;
-  }
-
-  /**
    * Returns the logger.
    *
    * @return the logger
    */
   public Logger getLogger() {
     return logger;
+  }
+
+  /**
+   * Sets the logger where to log the bytes.
+   *
+   * @param logger the logger
+   */
+  public void setLogger(Logger logger) {
+    this.logger = logger;
   }
 
   /**

@@ -1,6 +1,5 @@
 package uk.ac.ebi.pride.psmindex.mongo.search.config;
 
-
 import com.github.fakemongo.Fongo;
 import com.mongodb.MongoClient;
 import org.springframework.context.annotation.Bean;
@@ -10,7 +9,6 @@ import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 /** Configures Fongo for unit tests. */
-
 @ComponentScan(basePackages = "uk.ac.ebi.pride.psmindex.mongo.search.service")
 @EnableMongoRepositories(basePackages = "uk.ac.ebi.pride.psmindex.mongo.search.service.repository")
 @Configuration

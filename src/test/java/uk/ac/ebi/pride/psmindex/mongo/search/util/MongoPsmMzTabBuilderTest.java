@@ -2,7 +2,6 @@ package uk.ac.ebi.pride.psmindex.mongo.search.util;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,9 +18,6 @@ import java.util.*;
 /** Tests building PSMs from mzTab files. */
 public class MongoPsmMzTabBuilderTest {
 
-  private static Logger logger = LoggerFactory.getLogger(MongoPsmMzTabBuilderTest.class);
-  private static ErrorLogOutputStream errorLogOutputStream = new ErrorLogOutputStream(logger);
-
   private static final String PROJECT_1_ACCESSION = "PXD000581";
   private static final String PROJECT_2_ACCESSION = "TST000121";
   private static final String PROJECT_1_ASSAY_1 = "32411";
@@ -32,11 +28,13 @@ public class MongoPsmMzTabBuilderTest {
   private static final String MOD_NAME = "iodoacetamide - site C";
   private static final String FILE_PRE = ";PRIDE_Exp_Complete_Ac_";
   private static final String FILE_POST = ".xml;spectrum=";
+  private static final int NUM_ASSAYS = 3;
+  private static Logger logger = LoggerFactory.getLogger(MongoPsmMzTabBuilderTest.class);
+  private static ErrorLogOutputStream errorLogOutputStream = new ErrorLogOutputStream(logger);
   private static MZTabFile mzTabFileP1A1;
   private static MZTabFile mzTabFileP1A2;
   private static MZTabFile mzTabFileP1A3;
   private static MZTabFile mzTabFileP2A1;
-  private static final int NUM_ASSAYS = 3;
 
   /**
    * Reads in mzTab files.
