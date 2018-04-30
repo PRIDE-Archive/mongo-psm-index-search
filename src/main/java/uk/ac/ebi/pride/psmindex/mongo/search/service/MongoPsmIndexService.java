@@ -53,7 +53,7 @@ public class MongoPsmIndexService {
       if (logger.isDebugEnabled()) {
         debugSavePsm(psms);
       }
-      psms.parallelStream().forEach(mongoPsm -> mongoPsmRepository.save(mongoPsm));
+      mongoPsmRepository.saveAll(psms);
     }
   }
 
