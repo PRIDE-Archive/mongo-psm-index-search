@@ -130,35 +130,6 @@
         </plugins>
     </build>
 
-    <profiles>
-        <!-- select this profile to build the indexer into its ZIP file -->
-        <profile>
-            <id>psm-indexer-assembly</id>
-            <build>
-                <plugins>
-                    <!--assembly to zip-->
-                    <plugin>
-                        <artifactId>maven-assembly-plugin</artifactId>
-                        <configuration>
-                            <descriptors>
-                                <descriptor>${project.basedir}/assembly.xml</descriptor>
-                            </descriptors>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>assembly</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>single</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
-
     <dependencies>
         <!-- ##### PRIDE dependencies ##### ##### ##### ##### ##### -->
         <!--archive data provider-->
