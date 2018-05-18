@@ -1,10 +1,8 @@
 package uk.ac.ebi.pride.psmindex.mongo.search.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.stereotype.Service;
 import uk.ac.ebi.pride.psmindex.mongo.search.model.MongoPsm;
 import uk.ac.ebi.pride.psmindex.mongo.search.service.repository.MongoPsmRepository;
@@ -19,8 +17,6 @@ public class MongoPsmSearchService {
 
   @Resource private MongoPsmRepository mongoPsmRepository;
 
-  @Autowired private MongoOperations mongoOperations;
-
   /** Initializes the service. */
   public MongoPsmSearchService() {}
 
@@ -29,6 +25,7 @@ public class MongoPsmSearchService {
    *
    * @param mongoPsmRepository the Mongo PSM repository.
    */
+  @SuppressWarnings("WeakerAccess")
   public void setMongoPsmRepository(MongoPsmRepository mongoPsmRepository) {
     this.mongoPsmRepository = mongoPsmRepository;
   }
@@ -39,6 +36,7 @@ public class MongoPsmSearchService {
    * @param id the ID to search for
    * @return a PSM corresponding to the provided ID.
    */
+  @SuppressWarnings("WeakerAccess")
   public MongoPsm findById(String id) {
     return mongoPsmRepository.findById(id).orElse(new MongoPsm());
   }
@@ -49,6 +47,7 @@ public class MongoPsmSearchService {
    * @param ids a collection of ID to search for
    * @return a list of PSMs corresponding to the provided IDs.
    */
+  @SuppressWarnings("WeakerAccess")
   public List<MongoPsm> findByIdIn(Collection<String> ids) {
     return mongoPsmRepository.findByIdIn(ids);
   }
@@ -60,6 +59,7 @@ public class MongoPsmSearchService {
    * @param sort how the result should be sorted
    * @return a list of PSMs corresponding to the provided IDs.
    */
+  @SuppressWarnings("WeakerAccess")
   public List<MongoPsm> findByIdIn(Collection<String> ids, Sort sort) {
     return mongoPsmRepository.findByIdIn(ids, sort);
   }
