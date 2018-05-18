@@ -18,8 +18,8 @@ public interface MongoPsmRepository extends MongoRepository<MongoPsm, String> {
   /**
    * Finds a list of PSMs in a collection of IDs.
    *
-   * @param ids a collection of ID to search for
-   * @return a list of PSMs corresponding to the provided ID.
+   * @param ids a collection of IDs to search for
+   * @return a list of PSMs corresponding to the provided IDs.
    */
   List<MongoPsm> findByIdIn(Collection<String> ids);
 
