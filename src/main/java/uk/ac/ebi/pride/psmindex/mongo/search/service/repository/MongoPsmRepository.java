@@ -34,7 +34,7 @@ public interface MongoPsmRepository extends MongoRepository<MongoPsm, String> {
 
   // Project accession query methods
   /**
-   * Finds a PSM by a project accession.
+   * Finds a list of PSMs by a project accession.
    *
    * @param projectAccession the project accession to search for
    * @return a list of PSMs corresponding to the provided project accession
