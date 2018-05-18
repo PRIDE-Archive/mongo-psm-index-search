@@ -53,11 +53,11 @@ public interface MongoPsmRepository extends MongoRepository<MongoPsm, String> {
   /**
    * Finds a page of PSMs by an assay accession and pageable.
    *
-   * @param assayAcession the project accession to search for
+   * @param assayAccession the project accession to search for
    * @param pageable the page to request for
    * @return a list of PSMs corresponding to the provided project accession
    */
-  Page<MongoPsm> findByAssayAccession(String assayAcession, Pageable pageable);
+  Page<MongoPsm> findByAssayAccession(String assayAccession, Pageable pageable);
 
   /**
    * Counts how many PSMs are for a project accession.

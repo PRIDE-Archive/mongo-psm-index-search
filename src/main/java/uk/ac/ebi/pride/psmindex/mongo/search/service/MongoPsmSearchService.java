@@ -40,7 +40,7 @@ public class MongoPsmSearchService {
    * @return a PSM corresponding to the provided ID.
    */
   public MongoPsm findById(String id) {
-    return mongoPsmRepository.findById(id).orElse(null);
+    return mongoPsmRepository.findById(id).orElse(new MongoPsm());
   }
 
   /**
