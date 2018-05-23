@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.psmindex.mongo.search.util;
 
 /** This class builds a PSM ID String. */
+@SuppressWarnings("WeakerAccess")
 public class MongoPsmIdBuilder {
 
   public static final String SEPARATOR = "_";

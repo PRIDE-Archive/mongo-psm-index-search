@@ -16,6 +16,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /** Indexes a project's PSMs in Mongo. */
+@SuppressWarnings("WeakerAccess")
 public class MongoProjectPsmIndexer {
 
   private static final int MAX_PAGE_SIZE = 1000;

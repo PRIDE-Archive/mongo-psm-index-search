@@ -6,7 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.querydsl.QSort;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.ac.ebi.pride.archive.dataprovider.identification.ModificationProvider;
@@ -146,13 +146,13 @@ public class MongoPsmServiceTest {
     Assert.assertEquals(
         3,
         mongoPsmSearchService
-            .findByIdIn(mongoPsms.stream().map(MongoPsm::getId).collect(Collectors.toList()))
+            .findByIdIn(mongoPsms.stream().map(MongoPsm::getId).collect(Collectors.toList()), PageRequest.of(0, 100))
             .size());
     Assert.assertEquals(
         3,
         mongoPsmSearchService
             .findByIdIn(
-                mongoPsms.stream().map(MongoPsm::getId).collect(Collectors.toList()), new QSort())
+                mongoPsms.stream().map(MongoPsm::getId).collect(Collectors.toList()), new PageRequest(0, 100))
             .size());
   }
 

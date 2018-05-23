@@ -2,7 +2,6 @@ package uk.ac.ebi.pride.psmindex.mongo.search.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import uk.ac.ebi.pride.psmindex.mongo.search.model.MongoPsm;
 import uk.ac.ebi.pride.psmindex.mongo.search.service.repository.MongoPsmRepository;
@@ -45,23 +44,12 @@ public class MongoPsmSearchService {
    * Finds a list of PSMs in a collection of IDs.
    *
    * @param ids a collection of ID to search for
+   * @param pageable the page to request for
    * @return a list of PSMs corresponding to the provided IDs.
    */
   @SuppressWarnings("WeakerAccess")
-  public List<MongoPsm> findByIdIn(Collection<String> ids) {
-    return mongoPsmRepository.findByIdIn(ids);
-  }
-
-  /**
-   * A sorted list of PSMs in a collection of IDs.
-   *
-   * @param ids a collection of ID to search for
-   * @param sort how the result should be sorted
-   * @return a list of PSMs corresponding to the provided IDs.
-   */
-  @SuppressWarnings("WeakerAccess")
-  public List<MongoPsm> findByIdIn(Collection<String> ids, Sort sort) {
-    return mongoPsmRepository.findByIdIn(ids, sort);
+  public List<MongoPsm> findByIdIn(Collection<String> ids, Pageable pageable) {
+    return mongoPsmRepository.findByIdIn(ids, pageable);
   }
 
   /**

@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
  * This class cleans a PSM Sequence by converting it to uppercase, and removing any unknown
  * characters.
  */
+@SuppressWarnings("WeakerAccess")
 public class MongoPsmSequenceCleaner {
   public static final String NO_PEPTIDE_REGEX = "[^ABCDEFGHIJKLMNPQRSTUVWXYZ]";
   private static Logger logger = LoggerFactory.getLogger(MongoPsmSequenceCleaner.class.getName());

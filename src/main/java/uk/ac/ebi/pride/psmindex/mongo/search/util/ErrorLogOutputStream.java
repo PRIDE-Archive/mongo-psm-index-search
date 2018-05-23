@@ -8,6 +8,7 @@ import java.io.OutputStream;
  * Outputs the log to a stream. Adapted from:
  * http://www.java2s.com/Open-Source/Java/Testing/jacareto/jacareto/toolkit/log4j/LogOutputStream.java.htm
  */
+@SuppressWarnings("WeakerAccess")
 public class ErrorLogOutputStream extends OutputStream {
 
   /** The logger where to log the written bytes. */

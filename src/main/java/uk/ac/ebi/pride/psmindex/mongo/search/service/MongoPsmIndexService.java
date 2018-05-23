@@ -27,6 +27,7 @@ public class MongoPsmIndexService {
    *
    * @param mongoPsmRepository the Mongo PSM repository.
    */
+  @SuppressWarnings("WeakerAccess")
   public void setMongoPsmRepository(MongoPsmRepository mongoPsmRepository) {
     this.mongoPsmRepository = mongoPsmRepository;
   }
