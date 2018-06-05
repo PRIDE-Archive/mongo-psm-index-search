@@ -74,7 +74,7 @@ public class MongoProjectMongoPsmIndexerTest {
    */
   @Before
   public void setup() throws Exception {
-    mongoProjectPsmIndexer = new MongoProjectPsmIndexer(mongoPsmIndexService);
+    mongoProjectPsmIndexer = new MongoProjectPsmIndexer(mongoPsmIndexService, mongoPsmSearchService);
     mongoPsmIndexService.deleteAll();
     insertTestData();
   }

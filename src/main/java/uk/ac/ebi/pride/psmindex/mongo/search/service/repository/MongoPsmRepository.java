@@ -1,5 +1,7 @@
 package uk.ac.ebi.pride.psmindex.mongo.search.service.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
@@ -39,11 +41,18 @@ public interface MongoPsmRepository extends MongoRepository<MongoPsm, String> {
 
   // Project accession query methods
   /**
-   * Finds a PSM by a project accession.
-   * @param projectAccession the project accession to search for
-   * @return  a list of PSMs corresponding to the provided project accession
-   */
+   *Finds a PSM by a project accession.
+   *    * @param projectAccession the project accession to search for
+   *    * @return  a list of PSMs corresponding to the provided project accession
+   *    */
   List<MongoPsm> findByProjectAccession(String projectAccession);
+
+  /**
+   *Finds a PSM by a project accession.
+   *    * @param projectAccession the project accession to search for
+   *    * @return  a list of PSMs corresponding to the provided project accession
+   *    */
+  Page<MongoPsm> findByProjectAccession(String projectAccession, Pageable pageable);
 
   /**
    * Counts how many PSMs are for a project accession.
