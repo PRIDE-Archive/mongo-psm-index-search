@@ -65,18 +65,21 @@ public class MongoProjectPsmIndexer {
    * @param projectAccession the project's accession number to delete PSMs
    */
   public void deleteAllPsmsForProject(String projectAccession) {
-    int MAX_PAGE_SIZE = 1000;
-    long proteinCount = mongoPsmSearchService.countByProjectAccession(projectAccession);
+	logger.info("Starting to delete PSMs");
+	int MAX_PAGE_SIZE = 1000;
+    long psmCount = mongoPsmSearchService.countByProjectAccession(projectAccession);
     List<MongoPsm> initialPsmsFound;
-    while (0 < proteinCount) {
-      for (int i = 0; i < (proteinCount / MAX_PAGE_SIZE) + 1; i++) {
+	logger.info("Found " + psmCount + " psms to delete");
+	if (0 < psmCount) {
+      for (int i = 0; i < (psmCount / MAX_PAGE_SIZE) + 1; i++) {
         initialPsmsFound =
             mongoPsmSearchService
                 .findByProjectAccession(projectAccession, new PageRequest(i, MAX_PAGE_SIZE))
                 .getContent();
+		logger.info("Deleting psm page: " + i + " of " + (psmCount / MAX_PAGE_SIZE));
         mongoPsmIndexService.delete(initialPsmsFound);
       }
-      proteinCount = mongoPsmSearchService.countByProjectAccession(projectAccession);
+	  logger.info("Finished deleting all psm pages.");
     }
   }
 }
