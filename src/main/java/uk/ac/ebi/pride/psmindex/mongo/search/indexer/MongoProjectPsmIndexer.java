@@ -2,9 +2,11 @@ package uk.ac.ebi.pride.psmindex.mongo.search.indexer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.PageRequest;
 import uk.ac.ebi.pride.jmztab.model.MZTabFile;
 import uk.ac.ebi.pride.psmindex.mongo.search.model.MongoPsm;
 import uk.ac.ebi.pride.psmindex.mongo.search.service.MongoPsmIndexService;
+import uk.ac.ebi.pride.psmindex.mongo.search.service.MongoPsmSearchService;
 import uk.ac.ebi.pride.psmindex.mongo.search.util.MongoPsmMzTabBuilder;
 
 import javax.annotation.Resource;
@@ -22,13 +24,16 @@ public class MongoProjectPsmIndexer {
 
   @Resource
   private MongoPsmIndexService mongoPsmIndexService;
+  @Resource
+  private MongoPsmSearchService mongoPsmSearchService;
 
   /**
    * Constructor, sets the indexing service.
    * @param mongoPsmIndexService the indexing service
    */
-  public MongoProjectPsmIndexer(MongoPsmIndexService mongoPsmIndexService) {
+  public MongoProjectPsmIndexer(MongoPsmIndexService mongoPsmIndexService, MongoPsmSearchService mongoPsmSearchService) {
     this.mongoPsmIndexService = mongoPsmIndexService;
+    this.mongoPsmSearchService = mongoPsmSearchService;
   }
 
   /**
@@ -60,6 +65,21 @@ public class MongoProjectPsmIndexer {
    * @param projectAccession the project's accession number to delete PSMs
    */
   public void deleteAllPsmsForProject(String projectAccession) {
-    mongoPsmIndexService.deleteByProjectAccession(projectAccession);
+	logger.info("Starting to delete PSMs");
+	int MAX_PAGE_SIZE = 1000;
+    long psmCount = mongoPsmSearchService.countByProjectAccession(projectAccession);
+    List<MongoPsm> initialPsmsFound;
+	logger.info("Found " + psmCount + " psms to delete");
+	if (0 < psmCount) {
+      for (int i = 0; i < (psmCount / MAX_PAGE_SIZE) + 1; i++) {
+        initialPsmsFound =
+            mongoPsmSearchService
+                .findByProjectAccession(projectAccession, new PageRequest(i, MAX_PAGE_SIZE))
+                .getContent();
+		logger.info("Deleting psm page: " + i + " of " + (psmCount / MAX_PAGE_SIZE));
+        mongoPsmIndexService.delete(initialPsmsFound);
+      }
+	  logger.info("Finished deleting all psm pages.");
+    }
   }
 }

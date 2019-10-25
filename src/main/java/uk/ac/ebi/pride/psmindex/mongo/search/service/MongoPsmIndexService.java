@@ -107,16 +107,6 @@ public class MongoPsmIndexService {
   }
 
   /**
-   * Deletes all PSMs in Mongo for a project.
-   * @param projectAccession the project's accession number to delete PSMs
-   */
-  @Transactional
-  public void deleteByProjectAccession(String projectAccession) {
-    // todo Possible improvement - retrieve the ids to be deleted instead of the objects
-    mongoPsmRepository.delete(mongoPsmRepository.findByProjectAccession(projectAccession));
-  }
-
-  /**
    * Saves PSMs to Mongo.
    * @param psms the PSMs to save
    * @return PSMs that were successfully saved.

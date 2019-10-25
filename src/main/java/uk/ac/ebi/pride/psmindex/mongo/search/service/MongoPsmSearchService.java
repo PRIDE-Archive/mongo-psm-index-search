@@ -1,6 +1,8 @@
 package uk.ac.ebi.pride.psmindex.mongo.search.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.stereotype.Service;
@@ -74,6 +76,17 @@ public class MongoPsmSearchService {
   public List<MongoPsm> findByProjectAccession(String projectAccession) {
     return mongoPsmRepository.findByProjectAccession(projectAccession);
   }
+
+  /**
+   * Finds a PSM by a project accession.
+   * @param projectAccession the project accession to search for
+   * @param pageable the page
+   * @return  a list of PSMs corresponding to the provided project accession
+   */
+  public Page<MongoPsm> findByProjectAccession(String projectAccession, Pageable pageable) {
+	return mongoPsmRepository.findByProjectAccession(projectAccession, pageable);
+  }
+
 
   /**
    * Counts how many PSMs are for a project accession.
